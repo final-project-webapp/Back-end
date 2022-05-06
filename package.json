@@ -19,7 +19,10 @@
   "dependencies": {
     "axios": "^0.26.1",
     "dotenv": "^16.0.0",
-    "express": "^4.17.3",
+    "express": "^4.18.1",
+    "mongodb": "^4.5.0",
+    "mongoose": "^6.3.2",
+    "node-themoviedb": "^0.2.8",
     "nodemon": "^2.0.15"
   }
 }

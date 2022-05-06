@@ -1,22 +1,12 @@
-const express = require('express')
+const express = require('express');
 const app = express()
 const dotenv = require('dotenv');
 const axios = require('axios');
 const port = 3000
-dotenv.config();
-app.get('/movielist', (req, res) => {
-    var db = "SELECT * FROM movie p, orderdetail od, orderdetail_has_product odh WHERE od.order_id = odh.orderDetail_order_id AND p.product_id = odh.product_product_id";
-    sql.connect((err) => {
-      sql.query(db, function (err, result1) {
-        for (let index = 0; index < result1.length; index++) {
-          var element = result1[index].product_name;
-          console.log(element);
-        }
-        console.log(result1);
-        res.send(result1);
-      });
-    });
-})
+
+const req = require('express/lib/request');
+
+require("dotenv").config();
 
 const fetchMovies = async (page) => {
   try {
@@ -37,6 +27,64 @@ const fetchMovies = async (page) => {
   }
 };
 
+const fetchMoviesId = async (id) => {
+  try {
+    let result;
+    await axios
+      .get(
+        `https://api.themoviedb.org/3/movie/${id}?api_key=c9410770f4b61e1b500f64637ab158e5`
+      )
+      .then((response) => {
+        result = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const fetchMoviesProviders = async (movie_id) => {
+  try {
+    let result;
+    await axios
+      .get(
+        `https://api.themoviedb.org/3/movie/${movie_id}/watch/providers?api_key=c9410770f4b61e1b500f64637ab158e5`
+      )
+      .then((response) => {
+        result = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const fetchMoviesReviews = async (movie_id) => {
+  try {
+    let result;
+    await axios
+      .get(
+        `
+        https://api.themoviedb.org/3/movie/${movie_id}/reviews?api_key=c9410770f4b61e1b500f64637ab158e5`
+      )
+      .then((response) => {
+        result = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 app.get('/movies', async (req, res, next)=>{
   try {
       const {page} = req.query;
@@ -44,7 +92,7 @@ app.get('/movies', async (req, res, next)=>{
 
       return res.status(200).json({
         status:200,
-        message: `${data.length} movies found`, 
+        message:  `List of movies found`, 
         data
 
       })
@@ -53,8 +101,57 @@ app.get('/movies', async (req, res, next)=>{
     }
 })
 
+app.get('/moviesid', async (req, res, next)=>{
+  try {
+      const {id} = req.query;
+      const data = await fetchMoviesId(id);
+
+      return res.status(200).json({
+        status:200,
+        message: `movies found`, 
+        data
+
+      })
+    } catch (err) {
+      return next(err);
+    }
+})
+
+app.get('/moviespro', async (req, res, next)=>{
+  try {
+      const {movie_id} = req.query;
+      const data = await fetchMoviesProviders(movie_id);
+
+      return res.status(200).json({
+        status:200,
+        message: `movies found`, 
+        data
+
+      })
+    } catch (err) {
+      return next(err);
+    }
+})
+
+app.get('/moviesreviews', async (req, res, next)=>{
+  try {
+      const {movie_id} = req.query;
+      const data = await fetchMoviesReviews(movie_id);
+
+      return res.status(200).json({
+        status:200,
+        message: `movies found`, 
+        data
+
+      })
+    } catch (err) {
+      return next(err);
+    }
+})
+
+
 app.post('/', (req, res) => {
-    res.send('Hello World!')
+    res.send("Connected correctly to server")
 })
 app.put('/', (req, res) => {
     res.send('Hello World!')
@@ -63,5 +160,5 @@ app.delete('/', (req, res) => {
     res.send('Hello World!')
 })
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`listening on port ${port}`)
 })
