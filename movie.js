@@ -1,12 +1,15 @@
 const express = require('express');
 const app = express()
 const dotenv = require('dotenv');
+var cors = require('cors')
 const axios = require('axios');
 const port = 3000
-
+app.use(cors())
 const req = require('express/lib/request');
 
 require("dotenv").config();
+
+
 
 const fetchMovies = async (page) => {
   try {
