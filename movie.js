@@ -88,10 +88,10 @@ const fetchMoviesReviews = async (movie_id) => {
   }
 };
 
-app.get('/movies', async (req, res, next)=>{
+app.get('/movies/:page', async (req, res, next)=>{
   try {
       const {page} = req.query;
-      const data = await fetchMovies(page);
+      const data = await fetchMovies(req.params.page);
 
       return res.status(200).json({
         status:200,
@@ -104,10 +104,10 @@ app.get('/movies', async (req, res, next)=>{
     }
 })
 
-app.get('/moviesid', async (req, res, next)=>{
+app.get('/movies/:id', async (req, res, next)=>{
   try {
       const {id} = req.query;
-      const data = await fetchMoviesId(id);
+      const data = await fetchMoviesId(req.params.id);
 
       return res.status(200).json({
         status:200,
@@ -120,10 +120,10 @@ app.get('/moviesid', async (req, res, next)=>{
     }
 })
 
-app.get('/moviespro', async (req, res, next)=>{
+app.get('/moviespro/:movie_id', async (req, res, next)=>{
   try {
       const {movie_id} = req.query;
-      const data = await fetchMoviesProviders(movie_id);
+      const data = await fetchMoviesProviders(req.params.movie_id);
 
       return res.status(200).json({
         status:200,
@@ -136,10 +136,10 @@ app.get('/moviespro', async (req, res, next)=>{
     }
 })
 
-app.get('/moviesreviews', async (req, res, next)=>{
+app.get('/moviesreviews/:movie_id', async (req, res, next)=>{
   try {
       const {movie_id} = req.query;
-      const data = await fetchMoviesReviews(movie_id);
+      const data = await fetchMoviesReviews(req.params.movie_id);
 
       return res.status(200).json({
         status:200,
