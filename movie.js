@@ -9,7 +9,14 @@ const req = require('express/lib/request');
 
 require("dotenv").config();
 
+const cors = require('cors');
 
+
+const corsOptions = {
+  origin: 'http://localhost:8000',
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 const fetchMovies = async (page) => {
   try {
