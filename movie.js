@@ -30,12 +30,12 @@ const fetchMovies = async (page) => {
   }
 };
 
-const fetchMoviesId = async (id) => {
+const fetchMoviesId = async (moviesid) => {
   try {
     let result;
     await axios
       .get(
-        `https://api.themoviedb.org/3/movie/${id}?api_key=c9410770f4b61e1b500f64637ab158e5`
+        `https://api.themoviedb.org/3/movie/${moviesid}?api_key=c9410770f4b61e1b500f64637ab158e5`
       )
       .then((response) => {
         result = response.data;
@@ -104,10 +104,10 @@ app.get('/movies/:page', async (req, res, next)=>{
     }
 })
 
-app.get('/movies/:id', async (req, res, next)=>{
+app.get('/moviesid/:moviesid', async (req, res, next)=>{
   try {
-      const {id} = req.query;
-      const data = await fetchMoviesId(req.params.id);
+      const {moviesid} = req.query;
+      const data = await fetchMoviesId(req.params.moviesid);
 
       return res.status(200).json({
         status:200,
