@@ -13,7 +13,7 @@ const cors = require('cors');
 
 
 const corsOptions = {
-  origin: 'http://localhost:8000',
+  origin: 'http://frontend-final.azurewebsites.net/',
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -134,7 +134,7 @@ app.get('/moviesid/:moviesid', async (req, res, next)=>{
       const {moviesid} = req.query;
       const data = await fetchMoviesId(req.params.moviesid);
       if(data != null){return res.json(data)}
-      else{return res.json({status:404, message: "Can't find the movie that you're looking for"})}
+      else{return res.json({status:404, message: "Can't find the movie that you're looking for", data: "none"})}
     } catch (err) {
       return next(err);
     }
@@ -144,8 +144,9 @@ app.get('/moviespro/:movie_id', async (req, res, next)=>{
   try {
       const {movie_id} = req.query;
       const data = await fetchMoviesProviders(req.params.movie_id);
-      if(data != null){return res.json(data)}
-      else{return res.json({status:404, message: "Can't find the movie that you're looking for", data: "none"})}
+      console.log(data.results.TH.flatrate)
+      if(data.results != null){return res.json(data)}
+      else{return res.json({status:404, message: "Not Availavle", data: "none"})}
     } catch (err) {
       return next(err);
     }
@@ -168,14 +169,11 @@ app.get('/moviesreviews/:movie_id', async (req, res, next)=>{
 })
 app.get('/moviessearch/:movie_name', async (req, res, next)=>{
   try {
-      const {movie_name} = req.query;
       const data = await fetchMoviesSearch(req.params.movie_name);
-
       return res.status(200).json({
         status:200,
         message: `movies found`, 
         data
-
       })
     } catch (err) {
       return next(err);
@@ -183,9 +181,10 @@ app.get('/moviessearch/:movie_name', async (req, res, next)=>{
 })
 
 
-app.post('/', (req, res) => {
-    res.send("Connected correctly to server")
-})
+// app.get('/moviessearchnone/', (req, res) => {
+//   res.json({status:404, message: "Can't find the movie that you're looking for", data: "none"})
+// })
+
 app.put('/', (req, res) => {
     res.send('Hello World!')
 })
