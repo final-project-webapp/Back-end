@@ -13,7 +13,7 @@ const cors = require('cors');
 
 
 const corsOptions = {
-  origin: 'http://frontend-final.azurewebsites.net/',
+  origin: 'https://frontend-final.azurewebsites.net/',
   credentials: true,
 };
 app.use(cors(corsOptions));
