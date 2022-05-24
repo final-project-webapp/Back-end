@@ -144,7 +144,6 @@ app.get('/moviespro/:movie_id', async (req, res, next)=>{
   try {
       const {movie_id} = req.query;
       const data = await fetchMoviesProviders(req.params.movie_id);
-      console.log(data.results.TH.flatrate)
       if(data.results != null){return res.json(data)}
       else{return res.json({status:404, message: "Not Availavle", data: "none"})}
     } catch (err) {
