@@ -135,17 +135,46 @@ app.get('/moviesid/:moviesid', async (req, res, next)=>{
     }
 })
 
-app.get('/moviespro/:movie_id', async (req, res, next)=>{
+app.get('/moviesprous/:movie_id', async (req, res, next)=>{
   try {
       const {movie_id} = req.query;
       const data = await fetchMoviesProviders(req.params.movie_id);
-      if(data.results.US != null){return res.json(data.results.US)}
-      if(data.results.TH != null){return res.json(data.results.TH)}
-      if(data.results.US == null && data.results.TH == null){return res.json({status:404, message: "Not Availavle", data: "none"})}
+      if(data.results.US != null){
+        if(data.results.US.flatrate != null)
+        {return res.json(data)}
+        else{return res.json({status:404, message: "Not Availavle", data: "none"})}
+      }
+      else{return res.json({status:404, message: "Not Availavle", data: "none"})}
     } catch (err) {
-      return next(err);
+      return next(err)
     }
 })
+
+app.get('/moviesproth/:movie_id', async (req, res, next)=>{
+  try {
+      const {movie_id} = req.query;
+      const data = await fetchMoviesProviders(req.params.movie_id);
+      if(data.results.TH != null){
+        if(data.results.TH.flatrate != null)
+        {return res.json(data)}
+        else{return res.json({status:404, message: "Not Availavle", data: "none"})}
+      }
+      
+      else{return res.json({status:404, message: "Not Availavle", data: "none"})}
+    } catch (err) {
+      return next(err)
+    }
+})
+
+// app.get('/moviespro/:movie_id', async (req, res, next)=>{
+//   try {
+//       const {movie_id} = req.query;
+//       const data = await fetchMoviesProviders(req.params.movie_id);
+//         return res.json(data)
+//     } catch (err) {
+//       return next(err)
+//     }
+// })
 
 app.get('/moviesreviews/:movie_id', async (req, res, next)=>{
   try {
