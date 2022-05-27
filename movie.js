@@ -139,6 +139,7 @@ app.get('/moviesprous/:movie_id', async (req, res, next)=>{
   try {
       const {movie_id} = req.query;
       const data = await fetchMoviesProviders(req.params.movie_id);
+
       if(data.results.US != null){
         if(data.results.US.flatrate != null)
         {return res.json(data)}
@@ -159,7 +160,6 @@ app.get('/moviesproth/:movie_id', async (req, res, next)=>{
         {return res.json(data)}
         else{return res.json({status:404, message: "Not Availavle", data: "none"})}
       }
-      
       else{return res.json({status:404, message: "Not Availavle", data: "none"})}
     } catch (err) {
       return next(err)
