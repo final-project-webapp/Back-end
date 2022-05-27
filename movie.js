@@ -13,7 +13,7 @@ const cors = require('cors');
 
 
 const corsOptions = {
-  origin: 'http://frontend-final.azurewebsites.net/',
+  origin: 'https://frontend-final.azurewebsites.net/',
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -118,12 +118,7 @@ app.get('/movies/:page', async (req, res, next)=>{
       const {page} = req.query;
       const data = await fetchMovies(req.params.page);
 
-      return res.status(200).json({
-        status:200,
-        message:  `List of movies found`, 
-        data
-
-      })
+      return res.status(200).json({message:  `List of movies found`, data})
     } catch (err) {
       return next(err);
     }
@@ -144,8 +139,9 @@ app.get('/moviespro/:movie_id', async (req, res, next)=>{
   try {
       const {movie_id} = req.query;
       const data = await fetchMoviesProviders(req.params.movie_id);
-      if(data.results.US.flatrate && data.results.TH.flatrate != null){return res.json(data)}
-      else{return res.json({status:404, message: "Not Availavle", data: "none"})}
+      if(data.results.US != null){return res.json(data.results.US)}
+      if(data.results.TH != null){return res.json(data.results.TH)}
+      if(data.results.US == null && data.results.TH == null){return res.json({status:404, message: "Not Availavle", data: "none"})}
     } catch (err) {
       return next(err);
     }
@@ -157,8 +153,7 @@ app.get('/moviesreviews/:movie_id', async (req, res, next)=>{
       const data = await fetchMoviesReviews(req.params.movie_id);
 
       return res.status(200).json({
-        status:200,
-        message: `movies found`, 
+        message: `movies reviews found`, 
         data
 
       })
@@ -170,7 +165,6 @@ app.get('/moviessearch/:movie_name', async (req, res, next)=>{
   try {
       const data = await fetchMoviesSearch(req.params.movie_name);
       return res.status(200).json({
-        status:200,
         message: `movies found`, 
         data
       })
@@ -179,16 +173,34 @@ app.get('/moviessearch/:movie_name', async (req, res, next)=>{
     }
 })
 
+// app.post('/formdatausersupload', loginValidation, multerSigleUpload.single('image'), function (req, res) {
+//   console.log('file received');
+//   console.log(req);
+//   var asd = "SELECT emailaddress FROM user where emailaddress = '" + req.body.emailaddress + "'"
+//   sql.connect((err) => {
+//     sql.query(asd, function (err, result) {
+//       if (result == 0) {
+//         bcrypt.hash(req.body.password, 10, function (err, hash) {
+//           var db1 = "INSERT INTO user (`emailaddress`, `password`, `name`,`role`) VALUES ('" + req.body.emailaddress + "', '" + hash + "', '" + req.body.name + "','" + 2 + "')";
+//           sql.query(db1, function (err, result1) {
+//             console.log("pass");
+//           });
+//         });
+//       }else{
+//         res.status(400).json("not pass");
+//       }
+//     })
+//   });
 
-// app.get('/moviessearchnone/', (req, res) => {
-//   res.json({status:404, message: "Can't find the movie that you're looking for", data: "none"})
-// })
+//   res.redirect('/');
+// });
 
-app.put('/', (req, res) => {
-    res.send('Hello World!')
+
+app.get('/', (req, res) => {
+    res.send('Hello hello')
 })
-app.delete('/', (req, res) => {
-    res.send('Hello World!')
+app.get('/movies/', (req, res) => {
+    res.send('Hello get the number')
 })
 app.listen(port, () => {
     console.log(`listening on port ${port}`)
