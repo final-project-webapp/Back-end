@@ -16,11 +16,11 @@ app.use(express.static('public'));
 const cors = require('cors');
 
 
-// const corsOptions = {
-//   origin: 'https://frontend-final.azurewebsites.net',
-//   credentials: true,
-// };
-// app.use(cors(corsOptions));
+const corsOptions = {
+  origin: 'https://frontend-final.azurewebsites.net',
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 
   // window.fbAsyncInit = function() {
