@@ -1,23 +1,51 @@
-const express = require('express');
-const app = express()
-const dotenv = require('dotenv');
-
-const axios = require('axios');
-const port = 3000
-
-const req = require('express/lib/request');
-
-require("dotenv").config();
-
+const express = require("express");
+const bodyParser = require("body-parser");
+//const dotenv = require('dotenv');
+const app = express();
+const sql = require('./connect.js')
+//const axios = require('axios');
+//const bcrypt = require('bcrypt');
+// const port = 3000
+// import sql from 'connect.js';
+//const req = require('express/lib/request');
+app.use(express.json());
+//require("dotenv").config();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static('public'));
 const cors = require('cors');
 
 
-const corsOptions = {
-  origin: 'https://frontend-final.azurewebsites.net',
-  credentials: true,
-};
-app.use(cors(corsOptions));
+// const corsOptions = {
+//   origin: 'https://frontend-final.azurewebsites.net',
+//   credentials: true,
+// };
+// app.use(cors(corsOptions));
 
+
+  // window.fbAsyncInit = function() {
+  //   FB.init({
+  //     appId      : '{your-app-id}',
+  //     cookie     : true,
+  //     xfbml      : true,
+  //     version    : '{api-version}'
+  //   });
+      
+  //   FB.AppEvents.logPageView();   
+      
+  // };
+
+  // (function(d, s, id){
+  //    var js, fjs = d.getElementsByTagName(s)[0];
+  //    if (d.getElementById(id)) {return;}
+  //    js = d.createElement(s); js.id = id;
+  //    js.src = "https://connect.facebook.net/en_US/sdk.js";
+  //    fjs.parentNode.insertBefore(js, fjs);
+  //  }(document, 'script', 'facebook-jssdk'));
+
+  //  FB.getLoginStatus(function(response) {
+  //   statusChangeCallback(response);
+  //   });
 const fetchMovies = async (page) => {
   try {
     let result;
@@ -202,28 +230,55 @@ app.get('/moviessearch/:movie_name', async (req, res, next)=>{
     }
 })
 
-// app.post('/formdatausersupload', loginValidation, multerSigleUpload.single('image'), function (req, res) {
-//   console.log('file received');
-//   console.log(req);
-//   var asd = "SELECT emailaddress FROM user where emailaddress = '" + req.body.emailaddress + "'"
-//   sql.connect((err) => {
-//     sql.query(asd, function (err, result) {
-//       if (result == 0) {
-//         bcrypt.hash(req.body.password, 10, function (err, hash) {
-//           var db1 = "INSERT INTO user (`emailaddress`, `password`, `name`,`role`) VALUES ('" + req.body.emailaddress + "', '" + hash + "', '" + req.body.name + "','" + 2 + "')";
-//           sql.query(db1, function (err, result1) {
-//             console.log("pass");
-//           });
-//         });
-//       }else{
-//         res.status(400).json("not pass");
-//       }
-//     })
-//   });
+app.post('/adduser', function (req, res) {
+  console.log('file received');
+  console.log(req);
+  var db1 = "INSERT INTO user1 (`user_id`, `name`, `emailaddress`, `password`, `phonenumcer`, `DOB`, `address`, `role`) VALUES ('1', 'weq', 'wqe', '123', '123', '2000-10-10', '123', '1');"
+  sql.connect((err) => {
+          sql.query(db1, function (err, result1) {
+            console.log("pass"+ req.body.comment+ req.body.comment_id);
+            console.log(db1);
+          });
+        });
+   res.redirect('/');
+   return res.status(200)
+});
 
-//   res.redirect('/');
-// });
+app.post('/addcomment', function (req, res) {
+  console.log('file received');
+  console.log(req);
+  var db1 = "INSERT INTO commenttest (`comment_id`,`comment`, `user_user_id`) VALUES ('" + req.body.comment_id + "','" + req.body.comment  + "','" +  req.body.user_user_id +"');";
+  sql.connect((err) => {
+          sql.query(db1, function (err, result1) {
+            console.log("pass"+ req.body.comment+ req.body.comment_id);
+            console.log(db1);
+          });
+        });
+   res.redirect('/');
+   return res.status(200)
+});
 
+app.get('/registeruser1', function (req, res) {
+  console.log('file received');
+  console.log(req);
+  sql.connect((err) => {
+    var asd = "SELECT * FROM user;"
+    sql.query(asd, function (err, result) {
+      res.status(200).send(result);
+    })
+  });
+});
+
+app.get('/comment', function (req, res) {
+  console.log('file received');
+  console.log(req);
+  sql.connect((err) => {
+    var asd = "SELECT * FROM commenttest;"
+    sql.query(asd, function (err, result) {
+      res.status(200).send(result);
+    })
+  });
+});
 
 app.get('/', (req, res) => {
     res.send('Hello hello')
@@ -231,6 +286,7 @@ app.get('/', (req, res) => {
 app.get('/movies/', (req, res) => {
     res.send('Hello get the number')
 })
-app.listen(port, () => {
-    console.log(`listening on port ${port}`)
-})
+const PORT = process.env.PORT || 3006;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+});
