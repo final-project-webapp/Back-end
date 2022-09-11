@@ -1,6 +1,6 @@
 module.exports = {
-  HOST: "localhost",
-  USER: "root",
-  PASSWORD: "0891340851",
+  HOST: "mediare-db.mysql.database.azure.com",
+  USER: "weiR",
+  PASSWORD: "Pass12345",
   DB: "mydb"
 };
