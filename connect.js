@@ -22,7 +22,6 @@ var sql = mysql.createConnection({
   dateStrings:true,
   multipleStatements: true
 });
-
 module.exports = sql;
 // async function run() {
 //     try {

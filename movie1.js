@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 //const dotenv = require('dotenv');
 const app = express();
 const sql = require('./connect.js')
-const axios = require('axios');
+//const axios = require('axios');
 //const bcrypt = require('bcrypt');
 // const port = 3000
 // import sql from 'connect.js';
@@ -17,8 +17,7 @@ const cors = require('cors');
 
 
 const corsOptions = {
-  // origin: 'https://frontend-final.azurewebsites.net',
-  origin: 'http://localhost:8000',
+  origin: 'https://frontend-final.azurewebsites.net',
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -245,20 +244,6 @@ app.post('/adduser', function (req, res) {
    return res.status(200)
 });
 
-// app.post('/addcomment', function (req, res) {
-//   console.log('file received');
-//   console.log(req);
-//   var db1 = "INSERT INTO comment (`comment`, `user_user_id`) VALUES ('" + req.body.comment  + "','" +  req.body.user_user_id +"')"
-//   sql.connect((err) => {
-//           sql.query(db1, function (err, result1) {
-//             console.log("pass"+ req.body.comment+ req.body.comment_id);
-//             console.log(db1);
-//           });
-//         });
-//    res.redirect('/');
-//    return res.status(200)
-// });
-
 app.post('/addcomment', function (req, res) {
   console.log('file received');
   var db1 = "INSERT INTO comment (`comment`, `user_user_id`) VALUES ('" + req.body.comment  + "','" +  req.body.user_user_id +"');";
@@ -279,12 +264,11 @@ app.post('/addcomment', function (req, res) {
             });
           });
         });
-        res.redirect('/');
-           return res.status(200), res.send(data)
+    res.redirect('/');
 });
 
 app.get('/getcommentinarticle/:article', function (req, res) {
-  var a = "SELECT C.comment_id, C.comment, A.article_id, U.name FROM comment C, article_has_comment AHC, article A, user U WHERE C.comment_id = AHC.comment_comment_id AND AHC.article_article_id = A.article_id AND A.user_user_id = U.user_id AND A.article_id = "+ req.params.article+";";
+  var a = "SELECT C.comment_id, C.comment, U.name FROM comment C, article_has_comment AHC, article A, user U WHERE C.comment_id = AHC.comment_comment_id AND AHC.article_user_user_id = A.user_user_id AND A.user_user_id = U.user_id AND A.article_id = "+ req.params.article+";";
   sql.connect((err) => {
     sql.query(a, function (err, result) {
       res.status(200).send(result);
@@ -292,27 +276,70 @@ app.get('/getcommentinarticle/:article', function (req, res) {
   });
 });
 
-app.get('/registeruser1', function (req, res) {
+app.put('/editcomment/:comment_id', function (req, res) {
+  console.log('file received');
+  console.log(req);
+  var db1 = "UPDATE comment SET comment = '" + req.body.comment + "' WHERE comment_id = '" + req.params.comment_id + "';";
+  sql.connect((err) => {
+          sql.query(db1, function (err, result1) {
+            console.log("pass"+ req.body.comment+ req.body.comment_id);
+            console.log(db1);
+          });
+        });
+   res.redirect('/');
+   return res.status(200)
+})
+
+app.delete('/deletecomment/:comment_id', function (req, res) {
+  console.log('file received');
+  console.log(req);
+  var db1 = "DELETE FROM comment WHERE comment_id = '" + req.params.comment_id + "';";
+  var db2 = "DELETE FROM article_has_comment WHERE comment_comment_id = '" + req.params.comment_id + "';";
+  sql.connect((err) => {
+          sql.query(db2, function (err, result1) {
+            console.log("pass" + req.params.comment_id);
+            console.log(db2);
+            sql.query(db1, function (err, result1) {
+              console.log("pass"+ req.params.comment_id);
+              console.log(db1);
+            });
+          });
+        });
+   res.redirect('/');
+   return res.status(200)
+})
+
+// app.get('/registeruser1', function (req, res) {
+//   console.log('file received');
+//   console.log(req);
+//   sql.connect((err) => {
+//     var asd = "SELECT * FROM user;"
+//     sql.query(asd, function (err, result) {
+//       res.status(200).send(result);
+//     })
+//   });
+// });
+
+app.get('/comment', function (req, res) {
   console.log('file received');
   console.log(req);
   sql.connect((err) => {
-    var asd = "SELECT * FROM user;"
+    var asd = "SELECT * FROM comment"
     sql.query(asd, function (err, result) {
       res.status(200).send(result);
     })
   });
 });
 
-app.get('/comment', function (req, res) {
-  console.log('file received');
-  console.log(req);
+function addcomment(req, res, next) { 
   sql.connect((err) => {
-    var asd = "SELECT * FROM commenttest;"
+    var asd = "SELECT comment_id FROM comment WHERE comment_id = (SELECT MAX(comment_id) FROM comment);"
     sql.query(asd, function (err, result) {
-      res.status(200).send(result);
+      return result;
     })
   });
-});
+}
+
 
 app.post('/addarticle', function (req, res) {
   console.log('file received');
@@ -341,21 +368,10 @@ app.get('/getarticle', function (req, res) {
 });
 
 app.get('/getsinglearticle/:article_id',function (req, res){
-  var db1 = "SELECT * FROM article WHERE article_id = "+ req.params.article_id +";"
+  var db1 = "SELECT * FROM article WHERE article_id ="+ req.params.article_id +";"
   sql.connect((err) => {
     sql.query(db1, function (err, result1) {
       console.log(result1);
-      res.send(result1);
-    });
-  });
-})
-
-app.get('/getsinglearticlename/:movie_name',function (req, res){
-  var db1 = "SELECT * FROM article WHERE movie_name LIKE "+ "'" + req.params.movie_name + "'" +";"
-  sql.connect((err) => {
-    sql.query(db1, function (err, result1) {
-      console.log(result1);
-      console.log(db1);
       res.send(result1);
     });
   });
@@ -379,43 +395,7 @@ app.delete('/deletearticle/:article_id',function (req, res){
       res.send(result1);
     });
   });
-  
 })
-
-app.put('/editcomment', function (req, res) {
-  console.log('file received');
-  console.log(req);
-  var db1 = "UPDATE comment SET comment = '" + req.body.comment + "' WHERE comment_id = '" + req.body.comment_id + "';";
-  sql.connect((err) => {
-          sql.query(db1, function (err, result1) {
-            console.log("pass"+ req.body.comment+ req.body.comment_id);
-            console.log(db1);
-          });
-        });
-   res.redirect('/');
-   return res.status(200)
-})
-
-app.delete('/deletecomment/:comment_id', function (req, res) {
-  console.log('file received');
-  console.log(req);
-  var db1 = "DELETE FROM comment WHERE comment_id = '" + req.params.comment_id + "';";
-  var db2 = "DELETE FROM article_has_comment WHERE comment_comment_id = '" + req.params.comment_id + "';";
-  sql.connect((err) => {
-          sql.query(db2, function (err, result1) {
-            console.log("pass" + req.params.comment_id);
-            console.log(db2);
-            sql.query(db1, function (err, result1) {
-              console.log("pass"+ req.params.comment_id);
-              console.log(db1);
-            });
-          });
-        });   
-  res.redirect('/');
-   return res.status(200)
-   
-})
-
 
 app.get('/', (req, res) => {
     res.send('Hello hello')
@@ -423,7 +403,7 @@ app.get('/', (req, res) => {
 app.get('/movies/', (req, res) => {
     res.send('Hello get the number')
 })
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3002;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
