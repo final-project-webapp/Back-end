@@ -142,6 +142,26 @@ const fetchMoviesSearch = async (movie_name) => {
   }
 };
 
+const fetchMoviesSearchId = async (movie_id) => {
+  try {
+    let result;
+    await axios
+      .get(
+        `https://api.themoviedb.org/3/movie/${movie_id}?api_key=c9410770f4b61e1b500f64637ab158e5&language=en-US`
+        
+      )
+      .then((response) => {
+        result = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 app.get('/movies/:page', async (req, res, next)=>{
   try {
       const {page} = req.query;
@@ -227,6 +247,19 @@ app.get('/moviessearch/:movie_name', async (req, res, next)=>{
         data
       })
     } catch (err) {
+      return next(err);
+    }
+})
+
+app.get('/moviessearchId/:movie_id', async (req, res, next)=>{
+  try {
+      const data = await fetchMoviesSearchId(req.params.movie_id);      
+      return res.status(200).json({
+        message: `movies found`, 
+        data,        
+      })
+      console.log(data)
+    } catch (err) {    
       return next(err);
     }
 })
