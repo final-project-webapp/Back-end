@@ -17,8 +17,8 @@ const cors = require('cors');
 
 
 const corsOptions = {
-  // origin: 'https://frontend-final.azurewebsites.net',
-  origin: 'http://localhost:8000',
+  origin: 'https://frontend-final.azurewebsites.net',
+  //origin: 'http://localhost:8000',
   credentials: true,
 };
 app.use(cors(corsOptions));
