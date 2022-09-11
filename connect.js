@@ -4,7 +4,7 @@
 // const client = new MongoClient(url);
 // const MovieDB = require('node-themoviedb');
 // const mdb = new MovieDB('c9410770f4b61e1b500f64637ab158e5', 'en-US');
-
+const fs = require('fs');
 var mysql = require('mysql');
 const dbConfig = require("./db.config.js");
 // var sql = mysql.createConnection({
@@ -13,15 +13,26 @@ const dbConfig = require("./db.config.js");
 //   password: "0891340851",
 //   DB: "mydb"
 // });
-
-var sql = mysql.createConnection({
-  host: dbConfig.HOST,
-  user: dbConfig.USER,
-  password: dbConfig.PASSWORD,
-  database: dbConfig.DB,
+var sql =mysql.createConnection({
+  host:"mediare-db.mysql.database.azure.com", 
+  user:"weiR", 
+  password:"Pass12345", 
+  database:"mydb", 
+  port:3306, 
   dateStrings:true,
-  multipleStatements: true
+  multipleStatements: true,
+  ssl:{ca: fs.readFileSync("./DigiCertGlobalRootCA.crt.pem")}
 });
+
+
+//var sql = mysql.createConnection({
+  //host: dbConfig.HOST,
+  //user: dbConfig.USER,
+  //password: dbConfig.PASSWORD,
+  //database: dbConfig.DB,
+ // dateStrings:true,
+//  multipleStatements: true
+//});
 module.exports = sql;
 // async function run() {
 //     try {
