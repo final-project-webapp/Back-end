@@ -292,7 +292,7 @@ app.post('/adduser', function (req, res) {
 //    return res.status(200)
 // });
 
-app.post('/addcomment', function (req, res) {
+app.post('/addcomment',async (req, res) => {
   console.log('file received');
   var db1 = "INSERT INTO comment (`comment`, `user_user_id`) VALUES ('" + req.body.comment  + "','" +  req.body.user_user_id +"');";
   var cal = "SELECT * FROM comment WHERE comment_id = (SELECT MAX(comment_id) FROM comment);";
@@ -312,6 +312,7 @@ app.post('/addcomment', function (req, res) {
             });
           });
         });
+        await new Promise(resolve => setTimeout(resolve, 1000));
         res.redirect('/');
            return res.status(200), res.send(data)
 });
