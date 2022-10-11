@@ -267,6 +267,24 @@ app.get('/moviessearchId/:movie_id', async (req, res, next) => {
   }
 })
 
+app.get('/getsingleuser/:id', function (req, res) {
+  var id = req.params.id;
+  if (!req.cookies['jwt']) {
+    return res.status(401).send("must login")
+  } else {
+    const theCookie = req.cookies['jwt'];
+    const decoded = jwt.verify(theCookie, 'secrect');
+    if (!decoded) {
+      return res.status(401).send("unauthebtucated")
+    }
+  sql.query('SELECT * FROM user WHERE user_id = ?', [id], function (error, results, fields) {
+    if (error) throw error;
+    res.end(JSON.stringify(results));
+  });
+}
+})
+
+
 app.post('/adduser', function (req, res) {
   console.log('file received');
   var findemail = "Select emailaddress from user where emailaddress = '" + req.body.emailaddress + "'";
@@ -368,19 +386,6 @@ app.post('/logout', function (req, res) {
 
 
 
-
-app.get('getsingleuser/:user_id', function (req, res)  {
-  var db1 = "SELECT * FROM user WHERE user_id = '" + req.params.user_id + "'";
-  sql.connect((err) => {
-    sql.query(db1, function (err, result1) {
-      console.log("pass" + req.params.user_id);
-      console.log(db1);
-      if (err) throw err;
-      res.status(200).json({data: result1});
-    });
-  });
-});
-
 app.get('/getalluser', function(req, res){
   var db1 = "SELECT * FROM user";
   sql.connect((err) => {
@@ -473,6 +478,17 @@ app.get('/getsinglearticlename/:movie_name', function (req, res) {
     });
   });
 })
+
+app.get('getsingleuser/:user_id', function (req, res) {
+  var db1 = "SELECT * FROM user WHERE user_id = " + req.params.user_id + ";"
+  console.log(db1);
+  // sql.connect((err) => {
+  //   sql.query(db1, function (err, result1) {
+  //     console.log(result1);
+  //     res.send(result1);
+  //   });
+  // });
+});
 
 app.put('/editarticle/:article_id', function (req, res) {
   var db1 = "UPDATE article SET articles = '" + req.body.articles + "', writer = '" + req.body.writer + "', date = '" + req.body.date + "', movie_name = '" + req.body.movie_name + "', language = '" + req.body.language + "', view = '" + req.body.view + "' WHERE article_id = " + req.params.article_id + ";"
