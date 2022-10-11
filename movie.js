@@ -296,7 +296,7 @@ app.post('/adduser', function (req, res) {
       } else {
         bcrypt.genSalt(saltRounds, function (err, salt) {
           bcrypt.hash(req.body.password, salt, function (err, hash) {
-            var db1 = "INSERT INTO user (`name`, `emailaddress`, `password`, `role`) VALUES ('" + req.body.name + "', '" + req.body.emailaddress + "', '" + hash + "','" + '1' + "');";
+            var db1 = "INSERT INTO user (`name`, `emailaddress`,`DOB`, `password`, `role`) VALUES ('" + req.body.name + "', '" + req.body.emailaddress + "', '" + hash + "','" +req.body.DOB+ "','"+ '1' + "');";
             sql.connect((err) => {
               sql.query(db1, function (err, result1) {
                 console.log("pass" + req.body.comment + req.body.comment_id);
