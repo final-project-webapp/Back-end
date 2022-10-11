@@ -335,6 +335,8 @@ app.post('/login', function (req, res) {
   })
 });
 
+
+
 app.post('/addview/:article_id', function (req, res) {
   console.log('file received');
   var select = "Select * from article where article_id = '" + req.params.article_id + "'";
@@ -374,6 +376,7 @@ app.post('/addcomment', function (req, res) {
   res.redirect('/');
   return res.status(200), res.send(data)
 });
+
 
 app.post('/logout', function (req, res) {
   if (!req.cookies['jwt']) {
@@ -527,7 +530,6 @@ app.put('/editcomment', function (req, res) {
 
 app.delete('/deletecomment/:comment_id', function (req, res) {
   console.log('file received');
-  console.log(req);
   var db1 = "DELETE FROM comment WHERE comment_id = '" + req.params.comment_id + "';";
   var db2 = "DELETE FROM article_has_comment WHERE comment_comment_id = '" + req.params.comment_id + "';";
   sql.connect((err) => {
@@ -544,6 +546,63 @@ app.delete('/deletecomment/:comment_id', function (req, res) {
   return res.status(200)
 
 })
+
+app.post('addliketocomment/:comment_id', function (req, res) {
+  console.log('file received');
+  var select = "Select * from comment where comment_id = '" + req.params.comment_id + "'";
+  sql.connect((err) => {
+    sql.query(select, function (err, result1) {
+      var insert = "update comment set like = '" + (result1[0].like + 1) + "' where comment_id = '" + req.params.comment_id + "'";
+      sql.query(insert, function (err, result2) {
+        if (err) throw err;
+        console.log(result2);
+        res.status(200).json({data: 1});
+      });
+    });
+  });
+})
+
+app.get('getcommentamout/:article_id', function (req, res) {
+  console.log('file received');
+  var select = "Select * from article_has_comment where article_article_id = '" + req.params.article_id + "'";
+  sql.connect((err) => {
+    sql.query(select, function (err, result1) {
+      if (err) throw err;
+      console.log(result1);
+      res.status(200).json({data: result1.length});
+    });
+  });
+});
+
+app.post('makereviewer/:user_id', function (req, res) {
+  console.log('file received');
+  var select = "Select * from user where user_id = '" + req.params.user_id + "'";
+  sql.connect((err) => {
+    sql.query(select, function (err, result1) {
+      var insert = "update user set reviewer = '" + 1 + "' where user_id = '" + req.params.user_id + "'";
+      sql.query(insert, function (err, result2) {
+        if (err) throw err;
+        console.log(result2);
+        res.status(200).json({data: 1});
+      });
+    });
+  });
+})
+
+app.get('gettotallikeperuser/:user_id', function (req, res) {
+  console.log('file received');
+  var select = "Select * from user where user_id = '" + req.params.user_id + "'";
+  sql.connect((err) => {
+    sql.query(select, function (err, result1) {
+      if (err) throw err;
+      console.log(result1);
+      res.status(200).json({
+        name: result1[0].name,
+        totallike: result1[0].like});
+    });
+  });
+})
+
 
 
 app.get('/', (req, res) => {
