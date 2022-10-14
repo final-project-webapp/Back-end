@@ -20,11 +20,11 @@ const dbConfig = require("./db.config.js");
 //   multipleStatements: true,
 //   ssl:{ca: fs.readFileSync("./DigiCertGlobalRootCA.crt.pem")}
 // });
-// var connection = ({
-//   origin:"https://frontend-final.azurewebsites.net",
-//   credentials: true,
-//   //origin:"http://localhost:8000",
-// });
+var connection = ({
+  origin:"https://frontend-final.azurewebsites.net",
+  credentials: true,
+  //origin:"http://localhost:8000",
+});
 
 var sql = mysql.createConnection({
   host: dbConfig.HOST,
