@@ -10,6 +10,7 @@ var mysql = require('mysql2');
 const dbConfig = require("./db.config.js");
 
 
+
 var sql =mysql.createConnection({
   host:"mediare-db.mysql.database.azure.com", 
   user:"weiR", 
