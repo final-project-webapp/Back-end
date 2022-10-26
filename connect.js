@@ -10,30 +10,30 @@ var mysql = require('mysql2');
 const dbConfig = require("./db.config.js");
 
 
-// var sql =mysql.createConnection({
-//   host:"mediare-db.mysql.database.azure.com", 
-//   user:"weiR", 
-//   password:"Pass12345", 
-//   database:"mydb", 
-//   port:3306, 
-//   dateStrings:true,
-//   multipleStatements: true,
-//   ssl:{ca: fs.readFileSync("./DigiCertGlobalRootCA.crt.pem")}
-// });
+var sql =mysql.createConnection({
+  host:"mediare-db.mysql.database.azure.com", 
+  user:"weiR", 
+  password:"Pass12345", 
+  database:"mydb", 
+  port:3306, 
+  dateStrings:true,
+  multipleStatements: true,
+  ssl:{ca: fs.readFileSync("./DigiCertGlobalRootCA.crt.pem")}
+});
 // var connection = ({
 //   origin:"https://frontend-final.azurewebsites.net",
 //   credentials: true,
 //   //origin:"http://localhost:8000",
 // });
 
-var sql = mysql.createConnection({
-  host: dbConfig.HOST,
-  user: dbConfig.USER,
-  password: dbConfig.PASSWORD,
-  database: dbConfig.DB,
- dateStrings:true,
- multipleStatements: true
-});
+// var sql = mysql.createConnection({
+//   host: 'localhost',
+//   user: 'root',
+//   password: 'Por.123456',
+//   database: 'mydb',
+//   dateStrings:true,
+//   multipleStatements: true
+// });
 sql.connect(function (err) {
   if (err) throw err;
   console.log("Connected!");});
