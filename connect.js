@@ -32,6 +32,7 @@ var sql =mysql.createConnection({
 //   password: 'Por.123456',
 //   database: 'mydb',
 //   dateStrings:true,
+//   port:3306,
 //   multipleStatements: true
 // });
 sql.connect(function (err) {

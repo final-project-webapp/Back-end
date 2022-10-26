@@ -314,7 +314,7 @@ app.post('/adduser', function (req, res) {
       } else {
         bcrypt.genSalt(saltRounds, function (err, salt) {
           bcrypt.hash(req.body.password, salt, function (err, hash) {
-            var db1 = "INSERT INTO user (`name`, `emailaddress`,`DOB`, `password`, `role`) VALUES ('" + req.body.name + "', '" + req.body.emailaddress + "', '" + hash + "','" +req.body.DOB+ "','"+ '1' + "');";
+            var db1 = "INSERT INTO user (`name`, `emailaddress`,`password`, `DOB`, `role`) VALUES ('" + req.body.name + "', '" + req.body.emailaddress + "', '" + hash + "','" +req.body.DOB+ "','"+ '1' + "');";
             sql.connect((err) => {
               sql.query(db1, function (err, result1) {
                 console.log("pass" + req.body.comment + req.body.comment_id);
@@ -386,13 +386,13 @@ app.post('/addcomment', function (req, res) {
         sql.query(db2, function (err, result1) {
           console.log("pass" + req.body.comment);
           console.log(db2);
+          //return res.send(data)
         });
       });
     });
   });
   //await new Promise(resolve => setTimeout(resolve, 1000));
   res.redirect('/');
-  return res.status(200), res.send(data)
 });
 
 
@@ -500,7 +500,7 @@ app.get('/getsinglearticlename/:movie_name', function (req, res) {
   });
 })
 
-app.get('getsingleuser/:user_id', function (req, res) {
+app.get('/getsingleuser/:user_id', function (req, res) {
   var db1 = "SELECT * FROM user WHERE user_id = " + req.params.user_id + ";"
   console.log(db1);
   // sql.connect((err) => {
@@ -569,7 +569,7 @@ app.delete('/deletecomment/:comment_id', function (req, res) {
 
 })
 
-app.post('addliketocomment/:comment_id', function (req, res) {
+app.post('/addliketocomment/:comment_id', function (req, res) {
   console.log('file received');
   var select = "Select * from comment where comment_id = '" + req.params.comment_id + "'";
   sql.connect((err) => {
@@ -584,7 +584,7 @@ app.post('addliketocomment/:comment_id', function (req, res) {
   });
 })
 
-app.get('getcommentamout/:article_id', function (req, res) {
+app.get('/getcommentamout/:article_id', function (req, res) {
   console.log('file received');
   var select = "Select * from article_has_comment where article_article_id = '" + req.params.article_id + "'";
   sql.connect((err) => {
@@ -596,7 +596,7 @@ app.get('getcommentamout/:article_id', function (req, res) {
   });
 });
 
-app.post('makereviewer/:user_id', function (req, res) {
+app.post('/makereviewer/:user_id', function (req, res) {
   console.log('file received');
   var select = "Select * from user where user_id = '" + req.params.user_id + "'";
   sql.connect((err) => {
@@ -611,7 +611,7 @@ app.post('makereviewer/:user_id', function (req, res) {
   });
 })
 
-app.get('gettotallikeperuser/:user_id', function (req, res) {
+app.get('/gettotallikeperuser/:user_id', function (req, res) {
   console.log('file received');
   var select = "Select * from user where user_id = '" + req.params.user_id + "'";
   sql.connect((err) => {
@@ -642,7 +642,7 @@ app.get('/getarticleowner', function (req, res) {
   }
 })
 
-app.delete('deleteuser/:user_id', function (req, res) {
+app.delete('/deleteuser/:user_id', function (req, res) {
   console.log('file received');
   var db1 = "DELETE FROM user WHERE user_id = '" + req.params.user_id + "';";
   sql.connect((err) => {
@@ -655,7 +655,7 @@ app.delete('deleteuser/:user_id', function (req, res) {
   return res.status(200)
 })
 
-app.get('getarticlebyidparam/:user_id', function (req, res) {
+app.get('/getarticlebyidparam/:user_id', function (req, res) {
   console.log('file received');
   var select = "Select * from article where user_user_id = '" + req.params.user_id + "'";
   sql.connect((err) => {
