@@ -22,9 +22,9 @@ const cors = require('cors');
 
 
 const corsOptions = {
-   origin:"https://mediare.azurewebsites.net",
+   // origin: 'https://frontend-final.azurewebsites.net',
+   origin: 'http://localhost:8000',
    credentials: true,
-//   //origin:"http://localhost:8000",
 };
 app.use(cors(corsOptions));
 
@@ -268,23 +268,26 @@ app.get('/moviessearchId/:movie_id', async (req, res, next) => {
   }
 })
 
-app.get('/getsingleuser', function (req, res) {
-  if (!req.cookies['jwt']) {
-    return res.status(401).send("must login")
-  } else {
-    const theCookie = req.cookies['jwt'];
-    const decoded = jwt.verify(theCookie, 'secrect');
-    if (!decoded) {
-      return res.status(401).send("unauthebtucated")
-    }
-  sql.query('SELECT * FROM article WHERE user_user_id ='+ decoded.id, function (error, results) {
-    if (error) throw error;
-    return res.send(results);
-  });
-}
-})
+// app.get('/getsingleuser', function (req, res) {
+//   console.log('GSU:');  
+//   if (!req.cookies['jwt']) {
+//     return res.status(401).send("must login")
+//   } else {
+//     const theCookie = req.cookies['jwt'];
+//     const decoded = jwt.verify(theCookie, 'secrect');
+//     if (!decoded) {
+//       return res.status(401).send("unauthebtucated")
+//     }
+//   sql.query('SELECT * FROM user WHERE user_id = ?', function (error, results) {
+//     if (error) throw error;
+//     res.json({ data: results[0]});
+//     console.log('Result:');
+//     console.log(results[0]);
+//   });  
+// }
+// })
 
-app.put('/editarticle1', function (req, res) {
+app.get('/getsingleuser', (req, res, next) => {
   if (!req.cookies['jwt']) {
     return res.status(401).send("must login")
   } else {
@@ -293,15 +296,13 @@ app.put('/editarticle1', function (req, res) {
     if (!decoded) {
       return res.status(401).send("unauthebtucated")
     }
-  sql.query('UPDATE article SET articles = ? WHERE article_id = ? and user_user_id = ?', [req.body.articles, req.body.article_id, decoded.id], function (error, results) {
-    if (error) throw error;
-    if(results.affectedRows == 0){
-      return res.status(401).send("not real user")
-    }
-    return res.send(results);
-  });
-}
-})
+    sql.query('SELECT * FROM user where user_id=?', decoded.id, function (error, results) {
+      if (error) throw error;
+      res.send({ data: results[0]});
+    });
+  }
+});
+
 
 app.post('/adduser', function (req, res) {
   console.log('file received');
@@ -314,7 +315,7 @@ app.post('/adduser', function (req, res) {
       } else {
         bcrypt.genSalt(saltRounds, function (err, salt) {
           bcrypt.hash(req.body.password, salt, function (err, hash) {
-            var db1 = "INSERT INTO user (`name`, `emailaddress`,`password`, `DOB`, `role`) VALUES ('" + req.body.name + "', '" + req.body.emailaddress + "', '" + hash + "','" +req.body.DOB+ "','"+ '1' + "');";
+            var db1 = "INSERT INTO user (`name`, `emailaddress`,`DOB`, `password`, `role`) VALUES ('" + req.body.name + "', '" + req.body.emailaddress + "', '" + hash + "','" +req.body.DOB+ "','"+ '1' + "');";
             sql.connect((err) => {
               sql.query(db1, function (err, result1) {
                 console.log("pass" + req.body.comment + req.body.comment_id);
@@ -353,14 +354,12 @@ app.post('/login', function (req, res) {
   })
 });
 
-
-
-app.post('/addview/:article_id', function (req, res) {
+app.post('/addview', function (req, res) {
   console.log('file received');
-  var select = "Select * from article where article_id = '" + req.params.article_id + "'";
+  var select = "Select * from article where article_id = '" + req.body.article_id + "'";
   sql.connect((err) => {
     sql.query(select, function (err, result1) {
-      var insert = "update article set view = '" + (result1[0].view + 1) + "' where article_id = '" + req.params.article_id + "'";
+      var insert = "update article set view = '" + (result1[0].view + 1) + "' where article_id = '" + req.body.article_id + "'";
       sql.query(insert, function (err, result2) {
         if (err) throw err;
         console.log(result2);
@@ -386,13 +385,13 @@ app.post('/addcomment', function (req, res) {
         sql.query(db2, function (err, result1) {
           console.log("pass" + req.body.comment);
           console.log(db2);
-          //return res.send(data)
         });
       });
     });
   });
   //await new Promise(resolve => setTimeout(resolve, 1000));
   res.redirect('/');
+  return res.status(200), res.send(data)
 });
 
 
@@ -423,7 +422,7 @@ app.get('/getalluser', function(req, res){
 
 
 app.get('/getcommentinarticle/:article', function (req, res) {
-  var a = "SELECT C.comment_id, C.comment, A.article_id, U.name FROM comment C, article_has_comment AHC, article A, user U WHERE C.comment_id = AHC.comment_comment_id AND AHC.article_article_id = A.article_id AND A.user_user_id = U.user_id AND A.article_id = " + req.params.article + ";";
+  var a = "SELECT C.comment_id, C.comment, A.article_id, U.name, U.user_id FROM comment C, article_has_comment AHC, article A, user U WHERE C.comment_id = AHC.comment_comment_id AND AHC.article_article_id = A.article_id AND A.user_user_id = U.user_id AND A.article_id = " + req.params.article + ";";
   sql.connect((err) => {
     sql.query(a, function (err, result) {
       res.status(200).send(result);
@@ -500,7 +499,7 @@ app.get('/getsinglearticlename/:movie_name', function (req, res) {
   });
 })
 
-app.get('/getsingleuser/:user_id', function (req, res) {
+app.get('getsingleuser/:user_id', function (req, res) {
   var db1 = "SELECT * FROM user WHERE user_id = " + req.params.user_id + ";"
   console.log(db1);
   // sql.connect((err) => {
@@ -523,14 +522,10 @@ app.put('/editarticle/:article_id', function (req, res) {
 
 app.delete('/deletearticle/:article_id', function (req, res) {
   var db1 = "DELETE FROM article WHERE article_id = " + req.params.article_id + ";"
-  var db2 = "DELETE FROM article_has_comment WHERE article_article_id = " + req.params.article_id + ";"
   sql.connect((err) => {
-    sql.query(db2, function (err, result1) {
+    sql.query(db1, function (err, result1) {
       console.log(result1);
-      sql.query(db1, function (err, result2) {
-        console.log(result2);
-        res.send(result2);
-      });
+      res.send(result1);
     });
   });
 
@@ -569,7 +564,7 @@ app.delete('/deletecomment/:comment_id', function (req, res) {
 
 })
 
-app.post('/addliketocomment/:comment_id', function (req, res) {
+app.post('addliketocomment/:comment_id', function (req, res) {
   console.log('file received');
   var select = "Select * from comment where comment_id = '" + req.params.comment_id + "'";
   sql.connect((err) => {
@@ -584,7 +579,7 @@ app.post('/addliketocomment/:comment_id', function (req, res) {
   });
 })
 
-app.get('/getcommentamout/:article_id', function (req, res) {
+app.get('getcommentamout/:article_id', function (req, res) {
   console.log('file received');
   var select = "Select * from article_has_comment where article_article_id = '" + req.params.article_id + "'";
   sql.connect((err) => {
@@ -596,7 +591,7 @@ app.get('/getcommentamout/:article_id', function (req, res) {
   });
 });
 
-app.post('/makereviewer/:user_id', function (req, res) {
+app.post('makereviewer/:user_id', function (req, res) {
   console.log('file received');
   var select = "Select * from user where user_id = '" + req.params.user_id + "'";
   sql.connect((err) => {
@@ -611,7 +606,7 @@ app.post('/makereviewer/:user_id', function (req, res) {
   });
 })
 
-app.get('/gettotallikeperuser/:user_id', function (req, res) {
+app.get('gettotallikeperuser/:user_id', function (req, res) {
   console.log('file received');
   var select = "Select * from user where user_id = '" + req.params.user_id + "'";
   sql.connect((err) => {
@@ -625,47 +620,7 @@ app.get('/gettotallikeperuser/:user_id', function (req, res) {
   });
 })
 
-app.get('/getarticleowner', function (req, res) {
-  if (!req.cookies['jwt']) {
-    return res.status(401).send("must login")
-  } else {
-    const theCookie = req.cookies['jwt'];
-    const decoded = jwt.verify(theCookie, 'secrect');
-    if (!decoded) {
-      return res.status(401).send("unauthebtucated")
-    }
-    sql.query("SELECT * FROM article WHERE user_user_id = '" + decoded.id + "'", function (err, result) {
-      if (err) throw err;
-      console.log(decoded.id);
-      return res.status(200).send(result);
-    });
-  }
-})
 
-app.delete('/deleteuser/:user_id', function (req, res) {
-  console.log('file received');
-  var db1 = "DELETE FROM user WHERE user_id = '" + req.params.user_id + "';";
-  sql.connect((err) => {
-    sql.query(db1, function (err, result1) {
-      console.log("pass" + req.params.user_id);
-      console.log(db1);
-    });
-  });
-  res.redirect('/');
-  return res.status(200)
-})
-
-app.get('/getarticlebyidparam/:user_id', function (req, res) {
-  console.log('file received');
-  var select = "Select * from article where user_user_id = '" + req.params.user_id + "'";
-  sql.connect((err) => {
-    sql.query(select, function (err, result1) {
-      if (err) throw err;
-      console.log(result1);
-      res.status(200).json({data: result1});
-    });
-  });
-})
 
 app.get('/', (req, res) => {
   res.send('Hello hello')
@@ -673,7 +628,7 @@ app.get('/', (req, res) => {
 app.get('/movies/', (req, res) => {
   res.send('Hello get the number')
 })
-const PORT = process.env.PORT || 3006;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
