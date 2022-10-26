@@ -268,7 +268,23 @@ app.get('/moviessearchId/:movie_id', async (req, res, next) => {
   }
 })
 
-app.get('/getsingleuser', function (req, res) {
+// app.get('/getsingleuser', function (req, res) {
+//   if (!req.cookies['jwt']) {
+//     return res.status(401).send("must login")
+//   } else {
+//     const theCookie = req.cookies['jwt'];
+//     const decoded = jwt.verify(theCookie, 'secrect');
+//     if (!decoded) {
+//       return res.status(401).send("unauthebtucated")
+//     }
+//   sql.query('SELECT * FROM article WHERE user_user_id ='+ decoded.id, function (error, results) {
+//     if (error) throw error;
+//     return res.send(results);
+//   });
+// }
+// })
+
+app.get('/getsingleuser', (req, res, next) => {
   if (!req.cookies['jwt']) {
     return res.status(401).send("must login")
   } else {
@@ -277,12 +293,12 @@ app.get('/getsingleuser', function (req, res) {
     if (!decoded) {
       return res.status(401).send("unauthebtucated")
     }
-  sql.query('SELECT * FROM article WHERE user_user_id ='+ decoded.id, function (error, results) {
-    if (error) throw error;
-    return res.send(results);
-  });
-}
-})
+    sql.query('SELECT * FROM user where user_id=?', decoded.id, function (error, results) {
+      if (error) throw error;
+      res.send({ data: results[0]});
+    });
+  }
+});
 
 app.put('/editarticle1', function (req, res) {
   if (!req.cookies['jwt']) {
