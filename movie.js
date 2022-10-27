@@ -449,7 +449,9 @@ app.post('/logout', function (req, res) {
     res.status(401).json({data: 0});
   }
   else{
-    res.status(202).clearCookie('jwt').json({data: 1});
+    res.status(202)
+    .clearCookie('jwt',secure=true,sameSite='none')
+    .json({data: 1});
   }
 })
 
