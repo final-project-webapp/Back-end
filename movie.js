@@ -38,10 +38,10 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-const options = {
-  key: fs.readFileSync('etc/key.pem'),
-  cert: fs.readFileSync('etc/cert.pem')
-};
+//const options = {
+//  key: fs.readFileSync('etc/key.pem'),
+//  cert: fs.readFileSync('etc/cert.pem')
+//};
 // window.fbAsyncInit = function() {
 //   FB.init({
 //     appId      : '{your-app-id}',
@@ -729,8 +729,8 @@ app.get('/movies/', (req, res) => {
   res.send('Hello get the number')
 })
 const PORT = process.env.PORT || 3006;
-//app.listen(PORT, () => {
-//  console.log(`Server is running on port ${PORT}.`);
-//});
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+});
 
-https.createServer(options, app).listen(PORT);
+//https.createServer(options, app).listen(PORT);
