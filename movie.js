@@ -725,8 +725,8 @@ app.get('/movies/', (req, res) => {
   res.send('Hello get the number')
 })
 const PORT = process.env.PORT || 3006;
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}.`);
-// });
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+});
 
-https.createServer(app).listen(PORT);
+//https.createServer(app).listen(PORT);
