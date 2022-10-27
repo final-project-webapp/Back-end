@@ -7,6 +7,7 @@ const connection = require('./connect.js')
 const axios = require('axios');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const https = require('https');
 const jwt = require('jsonwebtoken');
 // const port = 3000
 const req = require('express/lib/request');
@@ -723,8 +724,9 @@ app.get('/', (req, res) => {
 app.get('/movies/', (req, res) => {
   res.send('Hello get the number')
 })
-const PORT = process.env.PORT || 3005;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
-});
+const PORT = process.env.PORT || 3006;
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}.`);
+// });
 
+https.createServer(app).listen(PORT);
