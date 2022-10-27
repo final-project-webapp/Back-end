@@ -445,14 +445,13 @@ app.post('/addcomment', function (req, res) {
 
 
 app.post('/logout', function (req, res) {
-  if (!req.cookies['jwt']) {
-    res.status(401).json({data: 0});
-  }
-  else{
-    res.status(202)
-    .clearCookie('jwt',secure=true,sameSite='none')
-    .json({data: 1});
-  }
+  // if (!req.cookies['jwt']) {
+  res.clearCookie('jwt').redirect('/');
+  //res.status(401).json({data: 0});
+  //}
+  //else{
+  //  res.status(202).clearCookie('jwt').json({data: 1});
+  //}
 })
 
 
