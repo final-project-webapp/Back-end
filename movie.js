@@ -7,6 +7,7 @@ const connection = require('./connect.js')
 const axios = require('axios');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const fs = require("fs");
 const https = require('https');
 const jwt = require('jsonwebtoken');
 // const port = 3000
@@ -37,7 +38,10 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-
+const options = {
+  key: fs.readFileSync('etc/key.pem'),
+  cert: fs.readFileSync('etc/cert.pem')
+};
 // window.fbAsyncInit = function() {
 //   FB.init({
 //     appId      : '{your-app-id}',
@@ -725,8 +729,8 @@ app.get('/movies/', (req, res) => {
   res.send('Hello get the number')
 })
 const PORT = process.env.PORT || 3006;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
-});
+//app.listen(PORT, () => {
+//  console.log(`Server is running on port ${PORT}.`);
+//});
 
-//https.createServer(app).listen(PORT);
+https.createServer(options, app).listen(PORT);
