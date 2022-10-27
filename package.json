@@ -31,6 +31,7 @@
     "mysql2": "^2.3.3",
     "node-mysql": "^0.4.2",
     "node-themoviedb": "^0.2.8",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "xmlhttprequest": "^1.8.0"
   }
 }
