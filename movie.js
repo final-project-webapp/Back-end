@@ -309,13 +309,24 @@ app.put('/editarticle1', function (req, res) {
     if (!decoded) {
       return res.status(401).send("unauthebtucated")
     }
-  sql.query('UPDATE article SET articles = ? WHERE article_id = ? and user_user_id = ?', [req.body.articles, req.body.article_id, decoded.id], function (error, results) {
-    if (error) throw error;
-    if(results.affectedRows == 0){
-      return res.status(401).send("not real user")
+    if(decoded.role != 2){
+      sql.query('UPDATE article SET articles = ? WHERE article_id = ? and user_user_id = ?', [req.body.articles, req.body.article_id, decoded.id], function (error, results) {
+        if (error) throw error;
+        if(results.affectedRows == 0){
+          console.log(decoded);
+           return res.status(401).send("not real user")
+         }
+        return res.send(results);
+      });
+    }else{
+      sql.query('UPDATE article SET articles=? WHERE article_id=?', [req.body.articles, req.body.article_id], function (error, results) {
+        if (error) throw error;
+        console.log(decoded);
+        return res.send(results);
+        
+      });
     }
-    return res.send(results);
-  });
+ 
 }
 })
 
@@ -355,7 +366,7 @@ app.post('/login', function (req, res) {
       if (result1.length > 0) {
         bcrypt.compare(req.body.password, result1[0].password, function (err, result) {
           if (result == true) {
-            var token = jwt.sign({ id: result1[0].user_id }, 'secrect', { expiresIn: '1d' });
+            var token = jwt.sign({ id: result1[0].user_id , role: result1[0].role }, 'secrect', { expiresIn: '1d' });
             res.cookie('jwt', token, { maxAge: 24 * 60 * 60 * 1000 });
             res.status(200).json({data: 1});
           } else {
@@ -471,16 +482,24 @@ app.get('/comment', function (req, res) {
 
 app.post('/addarticle', function (req, res) {
   console.log('file received');
-  console.log(req);
-  var db1 = "INSERT INTO article (`articles`,`writer`, `date`,`movie_name`,`language`,`view`,`user_user_id`) VALUES ('" + req.body.articles + "', '" + req.body.writer + "', '" + req.body.date + "', '" + req.body.movie_name + "', '" + req.body.language + "', '" + req.body.view + "', '" + req.body.user_user_id + "')"
+  if (!req.cookies['jwt']) {
+    return res.status(401).send("must login")
+  } else {
+    const theCookie = req.cookies['jwt'];
+    const decoded = jwt.verify(theCookie, 'secrect');
+    if (!decoded) {
+      return res.status(401).send("unauthebtucated")
+    }
+  var db1 = "INSERT INTO article (`articles`,`writer`, `date`,`movie_name`,`language`,`view`,`user_user_id`) VALUES ('" + req.body.articles + "', '" + req.body.writer + "', '" + req.body.date + "', '" + req.body.movie_name + "', '" + req.body.language + "', '" + req.body.view + "', '" + decoded.id + "')"
   sql.connect((err) => {
     sql.query(db1, function (err, result1) {
-      console.log("pass" + req.body.articles + req.body.user_user_id);
+      console.log("pass" + req.body.articles + decoded.id);
       console.log(db1);
     });
   });
   res.redirect('/');
   return res.status(200)
+  }
 });
 
 app.get('/getarticle', function (req, res) {
