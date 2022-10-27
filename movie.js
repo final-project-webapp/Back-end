@@ -19,11 +19,13 @@ const cookieParser = require('cookie-parser')
 app.use(cookieParser())
 const cors = require('cors');
 //const { connect } = require("./connect.js");
-//res.header("Access-Control-Allow-Origin", "*");
+app.use(function (req, res, next) {
+res.header("Access-Control-Allow-Origin", "https://mediare.azurewebsites.net");
 res.header("Access-Control-Allow-Credentials", true);
 res.header('Access-Control-Allow-methods', 'GET, POST, PUT, DELETE, OPTIONS');
-
-
+res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+next();
+});
 const corsOptions = {
    origin:"https://mediare.azurewebsites.net",
    credentials: true,
