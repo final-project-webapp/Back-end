@@ -377,7 +377,9 @@ app.post('/login', function (req, res) {
             res.cookie('jwt', token, 
             {maxAge: 24 * 60 * 60 * 1000, 
             secure: true,
-            domain: 'https://mediare.azurewebsites.net' });
+            domain: 'https://mediare.azurewebsites.net',
+            sameSite: 'none'
+          });
             res.status(200).json({data: 1});
           } else {
             res.status(401).json({data: 0});
