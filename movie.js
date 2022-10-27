@@ -19,6 +19,9 @@ const cookieParser = require('cookie-parser')
 app.use(cookieParser())
 const cors = require('cors');
 //const { connect } = require("./connect.js");
+res.header("Access-Control-Allow-Origin", "*");
+res.header("Access-Control-Allow-Credentials", true);
+res.header('Access-Control-Allow-methods', 'GET, POST, PUT, DELETE, OPTIONS');
 
 
 const corsOptions = {
@@ -366,7 +369,7 @@ app.post('/login', function (req, res) {
         bcrypt.compare(req.body.password, result1[0].password, function (err, result) {
           if (result == true) {
             var token = jwt.sign({ id: result1[0].user_id , role: result1[0].role }, 'secrect', { expiresIn: '1d' });
-            res.cookie('jwt', token, { maxAge: 24 * 60 * 60 * 1000 });
+            res.cookie('jwt', token, { httpOnly: false, maxAge: 24 * 60 * 60 * 1000 });
             res.status(200).json({data: 1});
           } else {
             res.status(401).json({data: 0});
