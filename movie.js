@@ -446,7 +446,8 @@ app.post('/addcomment', function (req, res) {
 
 app.post('/logout', function (req, res) {
   // if (!req.cookies['jwt']) {
-  res.clearCookie('jwt').redirect('/');
+  res.clearCookie('jwt',{secure: true,
+    sameSite: 'none'}).json({data: 1});
   //res.status(401).json({data: 0});
   //}
   //else{
