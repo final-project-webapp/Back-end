@@ -398,7 +398,9 @@ app.post('/login', function (req, res) {
 });
 
 app.get('/getcookie', function (req, res) {
-  res.cookie('jwt', 'test', { maxAge: 24 * 60 * 60 * 1000 });
+  res.cookie('jwt', 'test', { maxAge: 24 * 60 * 60 * 1000 ,
+    secure: true,
+    sameSite: 'none'});
   res.redirect('/');
 });
 
