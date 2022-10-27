@@ -326,7 +326,6 @@ app.put('/editarticle1', function (req, res) {
         
       });
     }
- 
 }
 })
 
@@ -380,7 +379,10 @@ app.post('/login', function (req, res) {
   })
 });
 
-
+app.get('/getcookie', function (req, res) {
+  res.cookie('jwt', 'test', { maxAge: 24 * 60 * 60 * 1000 });
+  res.redirect('/');
+});
 
 app.post('/addview/:article_id', function (req, res) {
   console.log('file received');
@@ -708,7 +710,7 @@ app.get('/', (req, res) => {
 app.get('/movies/', (req, res) => {
   res.send('Hello get the number')
 })
-const PORT = process.env.PORT || 3006;
+const PORT = process.env.PORT || 3005;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
