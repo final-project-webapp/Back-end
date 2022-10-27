@@ -19,7 +19,7 @@ const cookieParser = require('cookie-parser')
 app.use(cookieParser())
 const cors = require('cors');
 //const { connect } = require("./connect.js");
-res.header("Access-Control-Allow-Origin", "*");
+//res.header("Access-Control-Allow-Origin", "*");
 res.header("Access-Control-Allow-Credentials", true);
 res.header('Access-Control-Allow-methods', 'GET, POST, PUT, DELETE, OPTIONS');
 
