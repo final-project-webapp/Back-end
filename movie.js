@@ -420,7 +420,7 @@ app.post('/addview/:article_id', function (req, res) {
 
 app.post('/addcomment', function (req, res) {
   console.log('file received');
-  var db1 = "INSERT INTO comment (`comment`, `user_user_id`) VALUES ('" + req.body.comment + "','" + req.body.user_user_id + "');";
+  var db1 = "INSERT INTO comment (`comment`, `user_user_id`, `comment_writer`) VALUES ('" + req.body.comment + "','" + req.body.user_user_id + "','" + req.body.comment_writer + "');";
   var cal = "SELECT * FROM comment WHERE comment_id = (SELECT MAX(comment_id) FROM comment);";
   sql.connect((err) => {
     sql.query(cal, function (err, result2) {
@@ -434,13 +434,13 @@ app.post('/addcomment', function (req, res) {
         sql.query(db2, function (err, result1) {
           console.log("pass" + req.body.comment);
           console.log(db2);
-          //return res.send(data)
         });
       });
     });
   });
   //await new Promise(resolve => setTimeout(resolve, 1000));
   res.redirect('/');
+  return res.status(200)
 });
 
 
