@@ -473,7 +473,7 @@ app.get('/getalluser', function(req, res){
 
 
 app.get('/getcommentinarticle/:article', function (req, res) {
-  var a = "SELECT C.comment_id, C.comment, A.article_id, U.name, U.role, U.user_id FROM comment C, article_has_comment AHC, article A, user U WHERE C.comment_id = AHC.comment_comment_id AND AHC.article_article_id = A.article_id AND A.user_user_id = U.user_id AND A.article_id = " + req.params.article + ";";
+  var a = "SELECT C.comment_id, C.comment, C.comment_writer, C.user_user_id, A.article_id, U.name, U.role, U.user_id FROM comment C, article_has_comment AHC, article A, user U WHERE C.comment_id = AHC.comment_comment_id AND AHC.article_article_id = A.article_id AND A.user_user_id = U.user_id AND A.article_id = " + req.params.article + ";";
   sql.connect((err) => {
     sql.query(a, function (err, result) {
       res.status(200).send(result);
