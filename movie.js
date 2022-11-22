@@ -32,7 +32,8 @@ app.use(function (req, res, next) {
 const xhr = new XMLHttpRequest();
 xhr.withCredentials = true;
 const corsOptions = {
-  origin:"https://mediare.azurewebsites.net",
+  //origin:"https://mediare.azurewebsites.net",
+  origin:"https://20.239.69.7",
   credentials: true,
   //origin: "http://localhost:3000",
 };
