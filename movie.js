@@ -352,14 +352,15 @@ app.post('/adduser', function (req, res) {
     sql.query(findname, function (err, result2) {
       if (err) throw err;
       if (result2.length > 0) {
-        return res.status(401).json({ data: 0 });
+         res.status(401).json({ data: 0.1 });
       }
     });
+  });
     sql.connect((err) => {
     sql.query(findalias, function (err, result3) {
       if (err) throw err;
       if (result3.length > 0) {
-        return res.status(401).json({ data: 0 });
+         res.status(401).json({ data: 0.2 });
       }
     })
    })
@@ -367,11 +368,11 @@ app.post('/adduser', function (req, res) {
     sql.query(findemail, function (err, result1) {
       if (err) throw err;
       if (result1.length > 0) {
-        res.status(401).json({ data: 0 });
+        res.status(401).json({ data: 0.3 });
       } else {
         bcrypt.genSalt(saltRounds, function (err, salt) {
           bcrypt.hash(req.body.password, salt, function (err, hash) {
-            var db1 = "INSERT INTO user (`name`, `emailaddress`,`password`, `DOB`, `role`) VALUES ('" + req.body.name + "', '" + req.body.emailaddress + "', '" + hash + "','" + req.body.DOB + "','" + '1' + "');";
+            var db1 = "INSERT INTO user (`name`,`alias` ,`emailaddress`,`password`, `DOB`, `role`) VALUES ('" + req.body.name + "', '"+ req.body.alias+ "', '"+ req.body.emailaddress + "', '" + hash + "','" + req.body.DOB + "','" + '1' + "');";
             sql.connect((err) => {
               sql.query(db1, function (err, result1) {
                 console.log("pass" + req.body.comment + req.body.comment_id);
@@ -379,13 +380,13 @@ app.post('/adduser', function (req, res) {
                 if (err) throw err;
               });
             });
-            res.status(200).json({ data: 1 });
+            return res.status(200).json({ data: 1 });
           });
         });
       }
     });
   });
-  });
+  
 });
 
 app.post('/login', function (req, res) {
@@ -836,6 +837,17 @@ app.get('/getarticlebyidparam/:user_id', function (req, res) {
   });
 })
 
+app.get('/searcharticle/:article_name', function (req, res) {
+  console.log('file received');
+  var select = "Select * from article where movie_name LIKE '" + req.params.article_name + "%'";
+  sql.connect((err) => {
+    sql.query(select, function (err, result1) {
+      if (err) throw err;
+      console.log(result1);
+      res.status(200).json({ data: result1 });
+    });
+  });
+})
 
 app.get('/', (req, res) => {
   console.log("it's working");
