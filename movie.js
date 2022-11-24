@@ -355,12 +355,15 @@ app.post('/adduser', function (req, res) {
         return res.status(401).json({ data: 0 });
       }
     });
+    sql.connect((err) => {
     sql.query(findalias, function (err, result3) {
       if (err) throw err;
       if (result3.length > 0) {
         return res.status(401).json({ data: 0 });
       }
     })
+   })
+   sql.connect((err) => {
     sql.query(findemail, function (err, result1) {
       if (err) throw err;
       if (result1.length > 0) {
@@ -381,6 +384,7 @@ app.post('/adduser', function (req, res) {
         });
       }
     });
+  });
   });
 });
 
