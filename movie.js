@@ -352,7 +352,7 @@ app.post('/adduser', function (req, res) {
     sql.query(findname, function (err, result2) {
       if (err) throw err;
       if (result2.length > 0) {
-         res.status(401).json({ data: 0.1 });
+         res.status(401).json({ data: 0 });
       }
     });
   });
@@ -360,7 +360,7 @@ app.post('/adduser', function (req, res) {
     sql.query(findalias, function (err, result3) {
       if (err) throw err;
       if (result3.length > 0) {
-         res.status(401).json({ data: 0.2 });
+         res.status(401).json({ data: 0 });
       }
     })
    })
@@ -368,7 +368,7 @@ app.post('/adduser', function (req, res) {
     sql.query(findemail, function (err, result1) {
       if (err) throw err;
       if (result1.length > 0) {
-        res.status(401).json({ data: 0.3 });
+        res.status(401).json({ data: 0 });
       } else {
         bcrypt.genSalt(saltRounds, function (err, salt) {
           bcrypt.hash(req.body.password, salt, function (err, hash) {
