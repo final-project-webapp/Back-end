@@ -362,6 +362,7 @@ app.post('/adduser', function (req, res) {
       if (result3.length > 0) {
          res.status(401).json({ data: 0 });
       }
+      sql.destroy();
     })
    })
    sql.connect((err) => {
@@ -384,6 +385,7 @@ app.post('/adduser', function (req, res) {
           });
         });
       }
+      sql.destroy();
     });
   });
   
@@ -406,6 +408,7 @@ app.post('/login', function (req, res) {
                 sameSite: 'none'
               });
             res.status(200).json({ data: 1 });
+            sql.destroy();
           } else {
             res.status(401).json({ data: 0 });
           }
@@ -415,6 +418,7 @@ app.post('/login', function (req, res) {
       }
     })
   })
+  sql.destroy();
 });
 
 app.get('/getcookie', function (req, res) {
@@ -439,6 +443,7 @@ app.post('/addview/:article_id', function (req, res) {
       });
     });
   });
+  sql.destroy();
 })
 
 app.post('/addcomment', function (req, res) {
@@ -462,6 +467,7 @@ app.post('/addcomment', function (req, res) {
     });
   });
   //await new Promise(resolve => setTimeout(resolve, 1000));
+  sql.destroy();
   res.redirect('/');
   return res.status(200)
 });
@@ -505,6 +511,7 @@ app.get('/getalluser', function (req, res) {
         })
       });
     });
+    sql.destroy();
   }
 })
 
@@ -517,6 +524,7 @@ app.get('/getcommentinarticle/:article', function (req, res) {
       res.status(200).send(result);
     })
   });
+  sql.destroy();
 });
 
 app.get('/registeruser1', function (req, res) {
@@ -528,6 +536,7 @@ app.get('/registeruser1', function (req, res) {
       res.status(200).send(result);
     })
   });
+  sql.destroy();
 });
 
 app.get('/comment', function (req, res) {
@@ -539,6 +548,7 @@ app.get('/comment', function (req, res) {
       res.status(200).send(result);
     })
   });
+  sql.destroy();
 });
 
 app.post('/addarticle', function (req, res) {
@@ -558,6 +568,7 @@ app.post('/addarticle', function (req, res) {
         console.log(db1);
       });
     });
+    sql.destroy();
     res.redirect('/');
     return res.status(200)
   }
@@ -573,6 +584,7 @@ app.get('/getarticle', function (req, res) {
       res.send(result1);
     });
   });
+  sql.destroy();
 });
 
 app.get('/getsinglearticle/:article_id', function (req, res) {
@@ -583,6 +595,7 @@ app.get('/getsinglearticle/:article_id', function (req, res) {
       res.send(result1);
     });
   });
+  sql.destroy();
 })
 
 app.get('/getsinglearticlename/:movie_name', function (req, res) {
@@ -594,6 +607,7 @@ app.get('/getsinglearticlename/:movie_name', function (req, res) {
       res.send(result1);
     });
   });
+  sql.destroy();
 })
 
 app.get('/getsingleuser/:user_id', function (req, res) {
@@ -605,6 +619,7 @@ app.get('/getsingleuser/:user_id', function (req, res) {
       res.send(result1);
     });
   });
+  sql.destroy();
 });
 
 app.put('/editarticle/:article_id', function (req, res) {
@@ -615,6 +630,7 @@ app.put('/editarticle/:article_id', function (req, res) {
       res.send(result1);
     });
   });
+  sql.destroy();
 })
 
 app.delete('/deletearticle/:article_id', function (req, res) {
@@ -629,7 +645,7 @@ app.delete('/deletearticle/:article_id', function (req, res) {
       });
     });
   });
-
+  sql.destroy();
 })
 
 app.put('/editcomment', function (req, res) {
@@ -642,6 +658,7 @@ app.put('/editcomment', function (req, res) {
       console.log(db1);
     });
   });
+  sql.destroy();
   res.redirect('/');
   return res.status(200)
 })
@@ -660,6 +677,7 @@ app.delete('/deletecomment/:comment_id', function (req, res) {
       });
     });
   });
+  sql.destroy();
   res.redirect('/');
   return res.status(200)
 
@@ -678,6 +696,7 @@ app.post('/addliketocomment/:comment_id', function (req, res) {
       });
     });
   });
+  sql.destroy();
 })
 
 app.get('/getcommentamout/:article_id', function (req, res) {
@@ -690,6 +709,7 @@ app.get('/getcommentamout/:article_id', function (req, res) {
       res.status(200).json({ data: result1.length });
     });
   });
+  sql.destroy();
 });
 
 app.post('/makereviewer/:user_id', function (req, res) {
