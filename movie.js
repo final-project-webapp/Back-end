@@ -849,6 +849,24 @@ app.get('/searcharticle/:article_name', function (req, res) {
   });
 })
 
+app.get('/getarticlebymoviename', async (req, res)=> {
+  console.log('file received');
+
+  const data1 = await fetchMovies(req.params.page);
+  for (let i = 0; i < 5; i++) {
+    console.log(data1.results[i].original_title);
+    var select = "Select * from article where movie_name = '" + data1.results[i].original_title + "'";
+    sql.connect((err) => {
+      sql.query(select, function (err, result1) {
+        if (err) throw err;
+        console.log(result1);
+      });
+    });
+  }
+
+  //return res.status(200).json({ message: `List of movies found`, data1 });
+})
+
 app.get('/', (req, res) => {
   console.log("it's working");
   res.send('Hello hello')
