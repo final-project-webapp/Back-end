@@ -23,7 +23,7 @@ const storage = require('node-persist')
 
 
 const corsOptions = {
-  origin: 'https://frontend-final.azurewebsites.net',
+  origin: 'https://mediare.azurewebsites.net',
   //origin: 'http://localhost:8000',
   credentials: true,
 };
@@ -362,7 +362,7 @@ app.post('/adduser', function (req, res) {
       } else {
         bcrypt.genSalt(saltRounds, function (err, salt) {
           bcrypt.hash(req.body.password, salt, function (err, hash) {
-            var db1 = "INSERT INTO user (name, emailaddress,password, DOB, role) VALUES ('" + req.body.name + "', '" + req.body.emailaddress + "', '" + hash + "','" + req.body.DOB + "','" + '1' + "');";
+            var db1 = "INSERT INTO user (name, alias, emailaddress, password, DOB, role) VALUES ('" + req.body.name + "', '" + req.body.alias + "', '" + req.body.emailaddress + "', '" + hash + "','" + req.body.DOB + "','" + '1' + "');";
             sql.connect((err) => {
               sql.query(db1, function (err, result1) {
                 console.log("pass" + req.body.comment + req.body.comment_id);
@@ -816,8 +816,8 @@ app.get('/searcharticle/:movie_name', async (req, res) => {
   try{
   const data1 = await fetchMoviesSearch(req.params.movie_name);
   console.log(data1);
-  for (let i = 0; i < 1; i++) {
-    console.log(data1.results[i].original_title);
+  for (let i = 0; i < 5; i++) {
+    console.log("movie name :"+data1.results[i].original_title);
     var name = data1.results[i].original_title;
     var select = "SELECT  * ,RANK() OVER (ORDER BY view DESC) AS views FROM article WHERE movie_name LIKE '" + data1.results[i].original_title + "' LIMIT 3";
     var data = [];
@@ -828,11 +828,12 @@ app.get('/searcharticle/:movie_name', async (req, res) => {
         // data.push(data1.results[i])
         console.log(result1[0] + 'test');
         console.log(data.length + data);
-        if (data.length == 1) {
+        if (data.length == 5) {
           res.status(200).json({ message: "List of movies found", data });
-        }else{
-          res.status(404).json({ message: "No movies found" });
         }
+        // else{
+        //   res.status(404).json({ message: "No movies found" });
+        // }
       });
     });
 }}catch(err){
@@ -891,6 +892,34 @@ app.get('/userrank', function (req, res) {
   })
 })
 
+
+app.get('/randommoviearticle', function (req, res) {
+  var select = "SELECT DISTINCT movie_name  FROM article ORDER BY RAND() LIMIT 7";
+  sql.connect((err) => {
+    sql.query(select, async (err, result1) =>{
+      if (err) throw err;
+      console.log(result1.length);
+      data = [];
+      for (let i = 0; i < result1.length; i++) {
+      const data1 = await fetchMoviesSearch(result1[i].movie_name);
+      console.log(result1[i].movie_name);
+      var select2 = 'Select * from article where movie_name = "' + result1[i].movie_name +'" limit 3';
+      sql.query(select2, function (err, result2) {
+        if (err) throw err;
+        console.log(result2);
+        data.push({article: result2,title: data1.results[0].original_title, picture_path: data1.results[0].poster_path, movie_id: data1.results[0].id});
+        console.log(data.length);
+        if(data.length == result1.length){
+          console.log(data);
+          res.status(200).json({ message: "List of movies found", data });
+        }
+      })
+    }
+      //next(result1);
+      //res.status(200).json({ message: "List of movies found", data: result1 });
+    })
+  })
+})
 // app.get('/userrank', function (req, res) {
 //   console.log('file received');
 //   var rank = userrank();
