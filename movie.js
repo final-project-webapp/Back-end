@@ -23,7 +23,7 @@ const storage = require('node-persist')
 
 
 const corsOptions = {
-   origin: 'https://frontend-final.azurewebsites.net',
+  origin: 'https://frontend-final.azurewebsites.net',
   //origin: 'http://localhost:8000',
   credentials: true,
 };
@@ -535,16 +535,16 @@ app.get('/getsinglearticle/:article_id', function (req, res) {
   });
 })
 
-// app.get('/getsinglearticlename/:movie_name', function (req, res) {
-//   var db1 = "SELECT * FROM article WHERE movie_name LIKE " + "'" + req.params.movie_name + "'" + ";"
-//   sql.connect((err) => {
-//     sql.query(db1, function (err, result1) {
-//       console.log(result1);
-//       console.log(db1);
-//       res.send(result1);
-//     });
-//   });
-// })
+app.get('/getsinglearticlename/:movie_name', function (req, res) {
+  var db1 = "SELECT * FROM article WHERE movie_name LIKE " + "'" + req.params.movie_name + "'" + ";"
+  sql.connect((err) => {
+    sql.query(db1, function (err, result1) {
+      console.log(result1);
+      console.log(db1);
+      res.send(result1);
+    });
+  });
+})
 
 app.put('/editarticle1', function (req, res) {
   if (!req.cookies['jwt']) {
@@ -789,7 +789,7 @@ app.put('/editpassword', function (req, res) {
   }
 })
 
-app.get('/getsinglearticlename/:movie_name', function (req, res) {
+app.get('/getarticlebymoviename/:movie_name', function (req, res) {
   console.log('file received');
   if (!req.cookies['jwt']) {
     return res.status(401).send("must login")
@@ -799,7 +799,7 @@ app.get('/getsinglearticlename/:movie_name', function (req, res) {
     if (!decoded) {
       return res.status(401).send("unauthenticated")
     }
-    var select = "Select * from article where user_user_id = '" + decoded.id + "'AND movie_name LIKE '" + req.params.movie_name  + "%'";
+    var select = "Select * from article where user_user_id = '" + decoded.id + "'AND movie_name LIKE '" + req.params.movie_name + "%'";
     sql.connect((err) => {
       sql.query(select, function (err, result1) {
         if (err) throw err;
@@ -816,7 +816,7 @@ app.get('/searcharticle/:movie_name', async (req, res) => {
   try{
   const data1 = await fetchMoviesSearch(req.params.movie_name);
   console.log(data1);
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 1; i++) {
     console.log(data1.results[i].original_title);
     var name = data1.results[i].original_title;
     var select = "SELECT  * ,RANK() OVER (ORDER BY view DESC) AS views FROM article WHERE movie_name LIKE '" + data1.results[i].original_title + "' LIMIT 3";
@@ -828,8 +828,10 @@ app.get('/searcharticle/:movie_name', async (req, res) => {
         // data.push(data1.results[i])
         console.log(result1[0] + 'test');
         console.log(data.length + data);
-        if (data.length >= 3) {
+        if (data.length == 1) {
           res.status(200).json({ message: "List of movies found", data });
+        }else{
+          res.status(404).json({ message: "No movies found" });
         }
       });
     });
@@ -839,7 +841,7 @@ app.get('/searcharticle/:movie_name', async (req, res) => {
 }
 })
 
-app.get('/getarticlebymoviename/:page', async (req, res) => {
+app.get('/getarticlebypage/:page', async (req, res) => {
   console.log('file received');
   const data1 = await fetchMovies(req.params.page);
   const data2 = await storage.getItem('movies');
@@ -847,7 +849,7 @@ app.get('/getarticlebymoviename/:page', async (req, res) => {
   for (let i = 0; i < 5; i++) {
     console.log(data2.results[i].original_title);
     var name = data2.results[i].original_title;
-    var select = "SELECT  * ,RANK() OVER (ORDER BY view DESC) AS views FROM article WHERE movie_name = '" + data2.results[i].original_title + "' LIMIT 3";
+    var select = "SELECT  * ,RANK() OVER (ORDER BY view DESC) AS views FROM article WHERE movie_name = '" + data2.results[i].original_title + "' limit 3";
     var data = [];
     sql.connect((err) => {
       sql.query(select, function (err, result1) {
