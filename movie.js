@@ -236,16 +236,6 @@ app.get('/moviesproth/:movie_id', async (req, res, next) => {
   }
 })
 
-// app.get('/moviespro/:movie_id', async (req, res, next)=>{
-//   try {
-//       const {movie_id} = req.query;
-//       const data = await fetchMoviesProviders(req.params.movie_id);
-//         return res.json(data)
-//     } catch (err) {
-//       return next(err)
-//     }
-// })
-
 app.get('/moviesreviews/:movie_id', async (req, res, next) => {
   try {
     const { movie_id } = req.query;
@@ -284,25 +274,6 @@ app.get('/moviessearchId/:movie_id', async (req, res, next) => {
     return next(err);
   }
 })
-
-// app.get('/getsingleuser', function (req, res) {
-//   console.log('GSU:');  
-//   if (!req.cookies['jwt']) {
-//     return res.status(401).send("must login")
-//   } else {
-//     const theCookie = req.cookies['jwt'];
-//     const decoded = jwt.verify(theCookie, 'secrect');
-//     if (!decoded) {
-//       return res.status(401).send("unauthebtucated")
-//     }
-//   sql.query('SELECT * FROM user WHERE user_id = ?', function (error, results) {
-//     if (error) throw error;
-//     res.json({ data: results[0]});
-//     console.log('Result:');
-//     console.log(results[0]);
-//   });  
-// }
-// })
 
 app.get('/getsingleuser', (req, res, next) => {
   if (!req.cookies['jwt']) {
@@ -466,23 +437,10 @@ app.get('/getalluser', function (req, res) {
   });
 })
 
-
-
 app.get('/getcommentinarticle/:article', function (req, res) {
   var a = "SELECT C.comment_id, C.comment, C.comment_writer, C.user_user_id, A.article_id, U.name, U.role, U.user_id FROM comment C, article_has_comment AHC, article A, user U WHERE C.comment_id = AHC.comment_comment_id AND AHC.article_article_id = A.article_id AND A.user_user_id = U.user_id AND A.article_id = " + req.params.article + ";";
   sql.connect((err) => {
     sql.query(a, function (err, result) {
-      res.status(200).send(result);
-    })
-  });
-});
-
-app.get('/registeruser1', function (req, res) {
-  console.log('file received');
-  console.log(req);
-  sql.connect((err) => {
-    var asd = "SELECT * FROM user;"
-    sql.query(asd, function (err, result) {
       res.status(200).send(result);
     })
   });
@@ -574,17 +532,6 @@ app.put('/editarticle1', function (req, res) {
     }
   }
 })
-
-// app.delete('/deletearticle/:article_id', function (req, res) {
-//   var db1 = "DELETE FROM article WHERE article_id = " + req.params.article_id + ";"
-//   sql.connect((err) => {
-//     sql.query(db1, function (err, result1) {
-//       console.log(result1);
-//       res.send(result1);
-//     });
-//   });
-
-// })
 
 app.delete('/deletearticle/:article_id', function (req, res) {
   var db1 = "DELETE FROM article WHERE article_id = " + req.params.article_id + ";"
@@ -817,7 +764,7 @@ app.get('/searcharticle/:movie_name', async (req, res) => {
   const data1 = await fetchMoviesSearch(req.params.movie_name);
   console.log(data1);
   for (let i = 0; i < 5; i++) {
-    console.log("movie name :"+data1.results[i].original_title);
+    console.log(data1.results[i].original_title);
     var name = data1.results[i].original_title;
     var select = "SELECT  * ,RANK() OVER (ORDER BY view DESC) AS views FROM article WHERE movie_name LIKE '" + data1.results[i].original_title + "' LIMIT 3";
     var data = [];
@@ -892,7 +839,6 @@ app.get('/userrank', function (req, res) {
   })
 })
 
-
 app.get('/randommoviearticle', function (req, res) {
   var select = "SELECT DISTINCT movie_name  FROM article ORDER BY RAND() LIMIT 7";
   sql.connect((err) => {
@@ -907,7 +853,7 @@ app.get('/randommoviearticle', function (req, res) {
       sql.query(select2, function (err, result2) {
         if (err) throw err;
         console.log(result2);
-        data.push({article: result2,title: data1.results[0].original_title, picture_path: data1.results[0].poster_path, movie_id: data1.results[0].id});
+        data.push({articlename: result2,title: data1.results[0].title, picture_path: data1.results[0].poster_path, movie_id: data1.results[0].id});
         console.log(data.length);
         if(data.length == result1.length){
           console.log(data);
@@ -920,17 +866,24 @@ app.get('/randommoviearticle', function (req, res) {
     })
   })
 })
-// app.get('/userrank', function (req, res) {
-//   console.log('file received');
-//   var rank = userrank();
-//   res.status(200).json({ data: rank });
-// });
 
-
+app.get('/finduser/:name', function (req, res) {
+  console.log('file received');
+  var db1 = "SELECT * FROM user WHERE name LIKE '" + req.params.name + "%'";
+  sql.connect((err) => {
+    sql.query(db1, function (err, result1) {
+      console.log(db1);
+      return res.status(200).json({
+        message: 'user found',
+        data: result1
+      })
+    });
+  })
+}); 
 
 
 app.get('/getcookie', function (req, res) {
-  res.cookie('jwt', 'test', { maxAge: 24 * 60 * 60 * 1000 });
+  res.cookie('jwt1', 'test', { maxAge: 24 * 60 * 60 * 1000 });
   res.redirect('/');
 });
 
