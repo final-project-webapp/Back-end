@@ -359,7 +359,7 @@ app.post('/login', function (req, res) {
         bcrypt.compare(req.body.password, result1[0].password, function (err, result) {
           if (result == true) {
             var token = jwt.sign({ id: result1[0].user_id, role: result1[0].role }, 'secrect', { expiresIn: '1d' });
-            res.cookie('jwt', token, {sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
+            res.cookie('jwt', token, {sameSite: 'none',secure: true, maxAge: 24 * 60 * 60 * 1000 });
             res.status(200).json({ data: 1 });
           } else {
             res.status(401).json({ data: 0 });
@@ -883,7 +883,7 @@ app.get('/finduser/:name', function (req, res) {
 
 
 app.get('/getcookie', function (req, res) {
-  res.cookie('jwt1', 'test', {sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
+  res.cookie('jwt1', 'test', {sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000 });
   res.redirect('/');
 });
 
