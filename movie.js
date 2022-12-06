@@ -766,21 +766,17 @@ app.get('/searcharticle/:movie_name', async (req, res) => {
   for (let i = 0; i < 5; i++) {
     console.log(data1.results[i].original_title);
     var name = data1.results[i].original_title;
-    var select = "SELECT  * ,RANK() OVER (ORDER BY view DESC) AS views FROM article WHERE movie_name LIKE '" + data1.results[i].original_title + "' LIMIT 3";
+    var select = `SELECT  * ,RANK() OVER (ORDER BY view DESC) AS views FROM article WHERE movie_name LIKE '` + data1.results[i].original_title + `' LIMIT 3`;
     var data = [];
     sql.connect((err) => {
       sql.query(select, function (err, result1) {
         if (err) throw err;
         data.push({ articlename: result1, title: data1.results[i].original_title, picture_path: data1.results[i].poster_path, movie_id: data1.results[i].id });
-        // data.push(data1.results[i])
         console.log(result1[0] + 'test');
         console.log(data.length + data);
         if (data.length == 5) {
           res.status(200).json({ message: "List of movies found", data });
         }
-        // else{
-        //   res.status(404).json({ message: "No movies found" });
-        // }
       });
     });
 }}catch(err){
@@ -861,8 +857,6 @@ app.get('/randommoviearticle', function (req, res) {
         }
       })
     }
-      //next(result1);
-      //res.status(200).json({ message: "List of movies found", data: result1 });
     })
   })
 })
