@@ -766,7 +766,7 @@ app.get('/searcharticle/:movie_name', async (req, res) => {
     for (let i = 0; i < 5; i++) {
       console.log(data1.results[i].original_title);
       var name = data1.results[i].original_title;
-      var select = `SELECT  * ,RANK() OVER (ORDER BY view DESC) AS views FROM article WHERE movie_name LIKE '` + data1.results[i].original_title + `' LIMIT 3`;
+      var select = `SELECT  * ,RANK() OVER (ORDER BY view DESC) AS views FROM article WHERE movie_name LIKE "` + data1.results[i].original_title + `" LIMIT 3`;
       var data = [];
       sql.connect((err) => {
         sql.query(select, function (err, result1) {
