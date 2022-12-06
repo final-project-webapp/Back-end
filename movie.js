@@ -359,7 +359,7 @@ app.post('/login', function (req, res) {
         bcrypt.compare(req.body.password, result1[0].password, function (err, result) {
           if (result == true) {
             var token = jwt.sign({ id: result1[0].user_id, role: result1[0].role }, 'secrect', { expiresIn: '1d' });
-            res.cookie('jwt', token, {sameSite: 'none',secure: true, maxAge: 24 * 60 * 60 * 1000 });
+            res.cookie('jwt', token, { sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000 });
             res.status(200).json({ data: 1 });
           } else {
             res.status(401).json({ data: 0 });
@@ -418,7 +418,7 @@ app.post('/logout', function (req, res) {
     res.status(401).json({ data: 0 });
   }
   else {
-    res.status(202).clearCookie('jwt', {secure:true,sameSite:"none"}).json({ data: 1 });
+    res.status(202).clearCookie('jwt', { secure: true, sameSite: "none" }).json({ data: 1 });
   }
 })
 
@@ -760,30 +760,35 @@ app.get('/getarticlebymoviename/:movie_name', function (req, res) {
 
 app.get('/searcharticle/:movie_name', async (req, res) => {
   console.log('file received');
-  try{
-  const data1 = await fetchMoviesSearch(req.params.movie_name);
-  console.log(data1);
-  for (let i = 0; i < 5; i++) {
-    console.log(data1.results[i].original_title);
-    var name = data1.results[i].original_title;
-    var select = `SELECT  * ,RANK() OVER (ORDER BY view DESC) AS views FROM article WHERE movie_name LIKE '` + data1.results[i].original_title + `' LIMIT 3`;
-    var data = [];
-    sql.connect((err) => {
-      sql.query(select, function (err, result1) {
-        if (err) throw err;
-        data.push({ articlename: result1, title: data1.results[i].original_title, picture_path: data1.results[i].poster_path, movie_id: data1.results[i].id });
-        console.log(result1[0] + 'test');
-        console.log(data.length + data);
-        if (data.length == 5) {
-          res.status(200).json({ message: "List of movies found", data });
-        }
-      });
+  try {
+    const data1 = await fetchMoviesSearch(req.params.movie_name);
+    console.log(data1);
+    for (let i = 0; i < 5; i++) {
+      console.log(data1.results[i].original_title);
+      var name = data1.results[i].original_title;
+      var select = `SELECT  * ,RANK() OVER (ORDER BY view DESC) AS views FROM article WHERE movie_name LIKE '` + data1.results[i].original_title + `' LIMIT 3`;
+      var data = [];
+      sql.connect((err) => {
+        sql.query(select, function (err, result1) {
+          try {
+            data.push({ articlename: result1, title: data1.results[i].original_title, picture_path: data1.results[i].poster_path, movie_id: data1.results[i].id });
+            console.log(result1[0] + 'test');
+            console.log(data.length + data);
+            if (data.length == 5) {
+              res.status(200).json({ message: "List of movies found", data });
+            }
+          }
+          catch (err) {
+            console.log(err);
+          }
+        });
 
-    });
-}}catch(err){
-  console.log(err);
-  res.status(404).json({ message: "No movies found" });
-}
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({ message: "No movies found" });
+  }
 })
 
 app.get('/getarticlebypage/:page', async (req, res) => {
@@ -829,8 +834,8 @@ app.get('/userrank', function (req, res) {
       }
       if (data.length == 0) {
         res.status(200).json({ message: "No rank", user_id: 0 });
-      } else{
-      res.status(200).json({ message: "List of users found", user_id: data });
+      } else {
+        res.status(200).json({ message: "List of users found", user_id: data });
       }
     })
   })
@@ -839,25 +844,25 @@ app.get('/userrank', function (req, res) {
 app.get('/randommoviearticle', function (req, res) {
   var select = "SELECT DISTINCT movie_name  FROM article ORDER BY RAND() LIMIT 7";
   sql.connect((err) => {
-    sql.query(select, async (err, result1) =>{
+    sql.query(select, async (err, result1) => {
       if (err) throw err;
       console.log(result1.length);
       data = [];
       for (let i = 0; i < result1.length; i++) {
-      const data1 = await fetchMoviesSearch(result1[i].movie_name);
-      console.log(result1[i].movie_name);
-      var select2 = 'Select * from article where movie_name = "' + result1[i].movie_name +'" limit 3';
-      sql.query(select2, function (err, result2) {
-        if (err) throw err;
-        console.log(result2);
-        data.push({articlename: result2,title: data1.results[0].title, picture_path: data1.results[0].poster_path, movie_id: data1.results[0].id});
-        console.log(data.length);
-        if(data.length == result1.length){
-          console.log(data);
-          res.status(200).json({ message: "List of movies found", data });
-        }
-      })
-    }
+        const data1 = await fetchMoviesSearch(result1[i].movie_name);
+        console.log(result1[i].movie_name);
+        var select2 = 'Select * from article where movie_name = "' + result1[i].movie_name + '" limit 3';
+        sql.query(select2, function (err, result2) {
+          if (err) throw err;
+          console.log(result2);
+          data.push({ articlename: result2, title: data1.results[0].title, picture_path: data1.results[0].poster_path, movie_id: data1.results[0].id });
+          console.log(data.length);
+          if (data.length == result1.length) {
+            console.log(data);
+            res.status(200).json({ message: "List of movies found", data });
+          }
+        })
+      }
     })
   })
 })
@@ -874,7 +879,7 @@ app.get('/finduser/:name', function (req, res) {
       })
     });
   })
-}); 
+});
 
 // app.delete('/removeuser', function (req, res) {
 //   console.log('file received');
@@ -901,7 +906,7 @@ app.get('/finduser/:name', function (req, res) {
 // });
 
 app.get('/getcookie', function (req, res) {
-  res.cookie('jwt1', 'test', {sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000 });
+  res.cookie('jwt1', 'test', { sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000 });
   res.redirect('/');
 });
 
