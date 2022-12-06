@@ -778,6 +778,7 @@ app.get('/searcharticle/:movie_name', async (req, res) => {
           res.status(200).json({ message: "List of movies found", data });
         }
       });
+      
     });
 }}catch(err){
   console.log(err);
@@ -793,7 +794,7 @@ app.get('/getarticlebypage/:page', async (req, res) => {
   for (let i = 0; i < 5; i++) {
     console.log(data2.results[i].original_title);
     var name = data2.results[i].original_title;
-    var select = "SELECT  * ,RANK() OVER (ORDER BY view DESC) AS views FROM article WHERE movie_name = '" + data2.results[i].original_title + "' limit 3";
+    var select = "SELECT  * ,RANK() OVER (ORDER BY view DESC) AS views FROM article WHERE movie_name = '''||" + data2.results[i].original_title + "' limit 3";
     var data = [];
     sql.connect((err) => {
       sql.query(select, function (err, result1) {
