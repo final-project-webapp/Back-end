@@ -310,9 +310,9 @@ app.get('/getarticleowner', function (req, res) {
 
 app.post('/adduser', function (req, res) {
   console.log('file received');
-  var findemail = "Select emailaddress from user where emailaddress = '" + req.body.emailaddress + "'";
-  var findname = "Select name from user where name = '" + req.body.name + "'";
-  var findalias = "Select alias from user where alias = '" + req.body.alias + "'";
+  var findemail = "Select lower(emailaddress) from user where emailaddress = '" + req.body.emailaddress + "'";
+  var findname = "Select lower(name) from user where name = '" + req.body.name + "'";
+  var findalias = "Select lower(alias) from user where alias = '" + req.body.alias + "'";
   sql.connect((err) => {
     sql.query(findname, function (err, result2) {
       if (err) throw err;
@@ -351,7 +351,7 @@ app.post('/adduser', function (req, res) {
 
 app.post('/login', function (req, res) {
   console.log('file received');
-  var hash = "Select * from user where emailaddress = '" + req.body.emailaddress + "'";
+  var hash = "Select lower(emailaddress) as emailaddress,password,role,user_id from user where emailaddress = '" + req.body.emailaddress + "'";
   sql.connect((err) => {
     sql.query(hash, function (err, result1) {
       if (err) throw err;
@@ -881,6 +881,29 @@ app.get('/finduser/:name', function (req, res) {
   })
 }); 
 
+// app.delete('/removeuser', function (req, res) {
+//   console.log('file received');
+//   if (!req.cookies['jwt']) {
+//     return res.status(401).send("must login")
+//   } else {
+//     const theCookie = req.cookies['jwt'];
+//     const decoded = jwt.verify(theCookie, 'secrect');
+//     if (!decoded) {
+//       return res.status(401).send("unauthenticated")
+//     }
+//   var db1 = "DELETE FROM user WHERE user_id = '" + decoded.id + "'";
+//   sql.connect((err) => {
+//     sql.query(db1, function (err, result1) {
+//       console.log(db1);
+//       console.log(result1);
+//       clearCookie('jwt', {secure:true,sameSite:"none"}).json({ data: 'loged out' });
+//       res.status(200).json({
+//         message: 'user removed'
+//       })
+//     });
+//   })  
+// }
+// });
 
 app.get('/getcookie', function (req, res) {
   res.cookie('jwt1', 'test', {sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000 });
