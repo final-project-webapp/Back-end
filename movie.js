@@ -313,6 +313,13 @@ app.post('/adduser', function (req, res) {
   var findemail = "Select lower(emailaddress) from user where emailaddress = '" + req.body.emailaddress + "'";
   var findname = "Select lower(name) from user where name = '" + req.body.name + "'";
   var findalias = "Select lower(alias) from user where alias = '" + req.body.alias + "'";
+  var cutoffyear = new Date().getFullYear() - 14;
+  var cutoffdate = new Date(cutoffyear,0,1);
+  if(Date.parse(req.body.DOB) < cutoffdate){
+    console.log('true');
+  }else{
+    console.log('false');
+  }
   sql.connect((err) => {
     sql.query(findname, function (err, result2) {
       if (err) throw err;
@@ -326,9 +333,12 @@ app.post('/adduser', function (req, res) {
         return res.status(401).json({ data: 0 });
       }
     })
+    if(Date.parse(req.body.DOB) > cutoffdate){
+      return res.status(401).json({ data: 2, message: "You must be 14 years old to register" });
+    }
     sql.query(findemail, function (err, result1) {
       if (err) throw err;
-      if (result1.length > 0) {
+      if (result1.length > 0 ) {
         res.status(401).json({ data: 0 });
       } else {
         bcrypt.genSalt(saltRounds, function (err, salt) {
