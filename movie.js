@@ -891,6 +891,19 @@ app.get('/finduser/:name', function (req, res) {
   })
 });
 
+app.get('/getarticleadmin/:movie_name', function (req, res) {
+  console.log('file received');
+  var select = "Select * from article where user_user_id = '" + req.body.user_id + "'AND movie_name LIKE '" + req.params.movie_name + "%'";
+  sql.connect((err) => {
+    sql.query(select, function (err, result1) {
+      console.log(select);
+      return res.status(200).json({
+        message: 'article found',
+        data: result1
+      })
+    });
+  })
+})
 // app.delete('/removeuser', function (req, res) {
 //   console.log('file received');
 //   if (!req.cookies['jwt']) {
